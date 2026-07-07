@@ -1,0 +1,13 @@
+Flask
+Flask-SQLAlchemy
+psycopg2-binary
+chromadb
+langchain
+langchain-community
+langchain-google-genai
+google-generativeai
+python-dotenv
+flask-cors
+Flask-JWT-Extended
+marshmallow
+Flask-Migrate

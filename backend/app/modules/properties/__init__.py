@@ -1,0 +1,2 @@
+﻿# Properties module initialization
+
