@@ -15,6 +15,10 @@ __pycache__/
 .ipynb_checkpoints/
 chroma_db/
 backend/chroma_db/
+chroma_store/
+backend/chroma_store/
+static/uploads/
+backend/static/uploads/
 
 # Environment variables
 .env
