@@ -1,0 +1,26 @@
+This is the progress document. Anything done to the project should be informed into this.
+
+### Progress Update - July 26, 2026
+
+1. **Database Verification (P0):**
+   - Verified that PostgreSQL is running locally on port 5432 and successfully connected to the `nestquest` database.
+
+2. **Environment & Dependencies Setup:**
+   - Cleared and rebuilt the broken Python virtual environment (`venv`) to align with the system's active Python 3.14.6 interpreter.
+   - Installed all backend dependencies from `requirements.txt` (and added `flask-bcrypt` to the requirements).
+
+3. **Version Control Setup (P3):**
+   - Updated root and backend `.gitignore` files to properly ignore `static/uploads/` and `chroma_store/`.
+
+4. **Project Directory Restructuring (P4 & P5):**
+   - Cleaned up the old scaffolding layout and restructured the backend into a modular layout:
+     - `config.py`: Dev & Prod configs with strict database URL checks.
+     - `app.py`: Central Flask application factory.
+     - `models/`: Modular models matching SQL schema (Admin, Broker, User, Property, PropertyImage, Booking).
+     - `routes/`: Blueprint routing stubs under the `/api/v1/` prefix (auth, properties, bookings, search, admin).
+     - `services/`: ChromaDB and RAG service placeholders.
+     - `utils/`: Custom role decorators, standardized response formatting, and seeding stubs.
+   - Successfully verified the new structure by inspecting registered Flask routes.
+
+5. **Task Tracking Updated:**
+   - Marked P0, P2, P3, P4, P5 as complete (`[x]`) and P1 as in progress (`[~]`) in `TASK_TRACKER.md`.
