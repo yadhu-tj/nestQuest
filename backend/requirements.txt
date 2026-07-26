@@ -11,3 +11,4 @@ flask-cors
 Flask-JWT-Extended
 marshmallow
 Flask-Migrate
+flask-bcrypt
