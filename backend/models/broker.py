@@ -11,3 +11,6 @@ class Broker(db.Model):
     password = db.Column(db.String(255), nullable=False)
     company_name = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Relationships
+    properties = db.relationship('Property', backref='broker', cascade='all, delete-orphan', passive_deletes=True)
