@@ -9,13 +9,13 @@
 | # | Task | Owner | Status | Notes |
 |---|---|---|---|---|
 | P0 | PostgreSQL installed locally | Both | `[x]` | Create `nestquest` database |
-| P1 | Gemini API key obtained | Yadhu | `[~]` | Add to `.env` (To be added later by Yadhu) |
+| P1 | Gemini API key obtained | Yadhu | `[x]` | Add to `.env` |
 | P2 | Git repo initialized | Yadhu | `[x]` | |
 | P3 | `.gitignore` created | Yadhu | `[x]` | Include `.env`, `chroma_store/`, `__pycache__/`, `node_modules/`, `static/uploads/` |
 | P4 | Initial folder structure created | Yadhu | `[x]` | Match spec in `IMPLEMENTATION_PLAN.md` |
 | P5 | `.env` file created (not committed) | Yadhu | `[x]` | Use template from `PROJECT_CONTEXT.md` |
-| P6 | Wireframes done | Both | `[ ]` | Landing, Search Results, Broker Dashboard minimum |
-| P7 | UX spec documented | Yadhu | `[ ]` | |
+| P6 | Wireframes done | Jacob | `[ ]` | Landing, Search Results, Broker Dashboard minimum |
+| P7 | UX spec documented | Jacob | `[ ]` | |
 | P8 | Work split agreed | Both | `[ ]` | This document |
 
 ---
@@ -25,20 +25,20 @@
 
 | # | Task | Owner | Status | Notes |
 |---|---|---|---|---|
-| 1.1 | `config.py` — Dev/Prod config classes, load from `.env` | Yadhu | `[ ]` | PostgreSQL only, no SQLite |
-| 1.2 | `models/administrator.py` | Yadhu | `[ ]` | SERIAL PK |
-| 1.3 | `models/broker.py` | Yadhu | `[ ]` | SERIAL PK |
-| 1.4 | `models/user.py` | Yadhu | `[ ]` | Table name: `users` not `user` |
-| 1.5 | `models/property.py` | Yadhu | `[ ]` | Include `broker_notes` column |
-| 1.6 | `models/property_image.py` | Yadhu | `[ ]` | ON DELETE CASCADE |
-| 1.7 | `models/booking.py` | Yadhu | `[ ]` | ON DELETE CASCADE |
-| 1.8 | `requirements.txt` complete | Yadhu | `[ ]` | See `IMPLEMENTATION_PLAN.md` for full list |
-| 1.9 | `app.py` — Flask init, CORS, blueprints, static files | Yadhu | `[ ]` | CORS restricted to port 5173 |
-| 1.10 | `utils/responses.py` — `success_response`, `error_response` | Yadhu | `[ ]` | Used by every route |
-| 1.11 | `utils/decorators.py` — `role_required` decorator | Yadhu | `[ ]` | |
-| 1.12 | `utils/seed_admin.py` — Create first admin | Yadhu | `[ ]` | Run once manually |
-| 1.13 | `utils/seed_properties.py` — 20 mock properties | Yadhu | `[ ]` | Run after Phase 4. Rich broker_notes required |
-| 1.14 | DB tables created and verified in pgAdmin | Yadhu | `[ ]` | |
+| 1.1 | `config.py` — Dev/Prod config classes, load from `.env` | Yadhu | `[x]` | PostgreSQL only, no SQLite |
+| 1.2 | `models/administrator.py` | Yadhu | `[x]` | SERIAL PK |
+| 1.3 | `models/broker.py` | Yadhu | `[x]` | SERIAL PK |
+| 1.4 | `models/user.py` | Yadhu | `[x]` | Table name: `users` not `user` |
+| 1.5 | `models/property.py` | Yadhu | `[x]` | Include `broker_notes` column |
+| 1.6 | `models/property_image.py` | Yadhu | `[x]` | ON DELETE CASCADE |
+| 1.7 | `models/booking.py` | Yadhu | `[x]` | ON DELETE CASCADE |
+| 1.8 | `requirements.txt` complete | Yadhu | `[x]` | See `IMPLEMENTATION_PLAN.md` for full list |
+| 1.9 | `app.py` — Flask init, CORS, blueprints, static files | Yadhu | `[x]` | CORS restricted to port 5173 |
+| 1.10 | `utils/responses.py` — `success_response`, `error_response` | Yadhu | `[x]` | Used by every route |
+| 1.11 | `utils/decorators.py` — `role_required` decorator | Yadhu | `[x]` | |
+| 1.12 | `utils/seed_admin.py` — Create first admin | Yadhu | `[x]` | Run once manually |
+| 1.13 | `utils/seed_properties.py` — 20 mock properties | Yadhu | `[x]` | Run after Phase 4. Rich broker_notes required |
+| 1.14 | DB tables created and verified in pgAdmin | Yadhu | `[x]` | |
 
 ---
 
@@ -192,11 +192,11 @@
 | Phase | Owner | Total Tasks | Done | Status |
 |---|---|---|---|---|
 | Pre-Coding | Both | 9 | 5 | `[~]` In Progress |
-| Phase 1 | Yadhu | 14 | 0 | `[ ]` Not Started |
+| Phase 1 | Yadhu | 14 | 14 | `[x]` Done |
 | Phase 2 | Yadhu | 5 | 0 | `[ ]` Not Started |
 | Phase 3 | Jacob | 19 | 0 | `[ ]` Not Started |
 | Phase 4 | Yadhu | 14 | 0 | `[ ]` Not Started |
 | Phase 5 | Jacob | 9 | 0 | `[ ]` Not Started |
 | Phase 6 | Both | 22 | 0 | `[ ]` Not Started |
 | Phase 7 | Both | 15 | 0 | `[ ]` Not Started |
-| **Total** | | **107** | **5** | |
+| **Total** | | **107** | **19** | |
