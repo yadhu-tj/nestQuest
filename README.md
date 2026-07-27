@@ -232,7 +232,84 @@ All endpoints are prefixed with `/api/v1/`. Responses follow a consistent envelo
 |---|---|---|
 | `/auth/register` | POST | Register a new user or broker |
 | `/auth/login` | POST | Authenticate and receive a JWT |
+| `/auth/me` | GET | Retrieve authenticated profile |
 | `/properties/` | GET, POST | List or create properties |
+
+### Authentication API Contract (Handoff Specification)
+
+#### 1. Register (`POST /api/v1/auth/register`)
+**Request Body:**
+```json
+{
+  "name": "Jane Doe",
+  "email": "jane@example.com",
+  "password": "secretpassword",
+  "phone": "9876543210",
+  "role": "user",
+  "company_name": "Skyline Realty"
+}
+```
+> Note: `role` must be `'user'` or `'broker'`. `company_name` is optional (used when `role == 'broker'`). Admin registration via API is strictly prohibited.
+
+**Response (`201 Created`):**
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "Jane Doe",
+    "email": "jane@example.com",
+    "role": "user"
+  },
+  "message": "Registration successful as user"
+}
+```
+
+#### 2. Login (`POST /api/v1/auth/login`)
+**Request Body:**
+```json
+{
+  "email": "jane@example.com",
+  "password": "secretpassword"
+}
+```
+> Note: Role selection is not required on the frontend. The server detects the account type (`admin`, `broker`, or `user`) automatically.
+
+**Response (`200 OK`):**
+```json
+{
+  "success": true,
+  "data": {
+    "access_token": "<JWT_ACCESS_TOKEN>",
+    "user": {
+      "id": 1,
+      "name": "Jane Doe",
+      "email": "jane@example.com",
+      "role": "user"
+    }
+  },
+  "message": "Login successful"
+}
+```
+
+#### 3. Current User Profile (`GET /api/v1/auth/me`)
+**Headers:** `Authorization: Bearer <JWT_ACCESS_TOKEN>`
+
+**Response (`200 OK`):**
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "Jane Doe",
+    "email": "jane@example.com",
+    "phone": "9876543210",
+    "role": "user",
+    "created_at": "2026-07-27T06:50:32.731083"
+  },
+  "message": "Profile fetched successfully"
+}
+```
 | `/properties/<id>` | GET, PUT, DELETE | Manage a specific property |
 | `/search/` | POST | Submit a natural language search query |
 | `/bookings/` | GET, POST | View or create visit bookings |

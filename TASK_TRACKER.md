@@ -47,11 +47,11 @@
 
 | # | Task | Owner | Status | Notes |
 |---|---|---|---|---|
-| 2.1 | `POST /api/v1/auth/register` | Yadhu | `[ ]` | user or broker role, bcrypt hashing |
-| 2.2 | `POST /api/v1/auth/login` | Yadhu | `[ ]` | Query all 3 tables, role in JWT |
-| 2.3 | `GET /api/v1/auth/me` | Yadhu | `[ ]` | Decode JWT, return profile |
-| 2.4 | Auth endpoints tested in Postman | Yadhu | `[ ]` | Register → Login → Me flow |
-| 2.5 | **Handoff to Jacob** — Share auth API response format | Yadhu | `[ ]` | Jacob needs this for AuthContext |
+| 2.1 | `POST /api/v1/auth/register` | Yadhu | `[x]` | user or broker role, bcrypt hashing |
+| 2.2 | `POST /api/v1/auth/login` | Yadhu | `[x]` | Query all 3 tables, role in JWT |
+| 2.3 | `GET /api/v1/auth/me` | Yadhu | `[x]` | Decode JWT, return profile |
+| 2.4 | Auth endpoints tested in Postman | Yadhu | `[x]` | Register → Login → Me flow |
+| 2.5 | **Handoff to Jacob** — Share auth API response format | Yadhu | `[x]` | Jacob needs this for AuthContext |
 
 ---
 
@@ -193,10 +193,10 @@
 |---|---|---|---|---|
 | Pre-Coding | Both | 9 | 6 | `[~]` In Progress |
 | Phase 1 | Yadhu | 14 | 14 | `[x]` Done |
-| Phase 2 | Yadhu | 5 | 0 | `[ ]` Not Started |
+| Phase 2 | Yadhu | 5 | 5 | `[x]` Done |
 | Phase 3 | Jacob | 19 | 0 | `[ ]` Not Started |
 | Phase 4 | Yadhu | 14 | 0 | `[ ]` Not Started |
 | Phase 5 | Jacob | 9 | 0 | `[ ]` Not Started |
 | Phase 6 | Both | 22 | 0 | `[ ]` Not Started |
 | Phase 7 | Both | 15 | 0 | `[ ]` Not Started |
-| **Total** | | **107** | **20** | |
+| **Total** | | **107** | **25** | |

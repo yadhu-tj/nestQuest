@@ -51,4 +51,13 @@ This is the progress document. Anything done to the project should be informed i
    - **IDE Workspace Configuration (`.vscode/settings.json`):**
      - Created `.vscode/settings.json` setting `python.defaultInterpreterPath` to `backend/venv/Scripts/python.exe` and adding `backend` to `extraPaths` to fix import squiggles in VS Code.
    - **Task Tracker Updated:**
-     - Updated `TASK_TRACKER.md` to mark all 14 Phase 1 tasks as complete (`[x]`). Total completed tasks: 19 / 107.
+     - Updated `TASK_TRACKER.md` to mark all 14 Phase 1 tasks as complete (`[x]`). Total completed tasks: 20 / 107.
+
+2. **Phase 2 — Authentication & Authorization (Completed 5/5 tasks):**
+   - **`POST /api/v1/auth/register` (Task 2.1):** Implemented user and broker registration endpoint with input validation (`RegisterSchema`), email uniqueness check across `Administrator`, `Broker`, `User` tables, password hashing with `bcrypt`, role-aware DB insertion (`users` or `broker` table), and standard JSON envelope.
+   - **`POST /api/v1/auth/login` (Task 2.2):** Implemented multi-table authentication endpoint querying `Administrator` -> `Broker` -> `User` sequentially by email for server-side role detection. Validates bcrypt password hashes and generates JWT access tokens with embedded `role`, `id`, `email`, `name` claims.
+   - **`GET /api/v1/auth/me` (Task 2.3):** Implemented JWT-authenticated profile endpoint that decodes claims and returns role-aware account profile (`admin`, `broker`, or `user`).
+   - **Integration Testing (Task 2.4):** Verified complete Register -> Login -> Me authentication flow across all 3 roles using automated integration tests. Updated `JWT_SECRET_KEY` and `SECRET_KEY` in `.env` to >32 bytes.
+   - **Handoff Documentation (Task 2.5):** Documented complete Auth API payload contract in `README.md` for frontend `AuthContext.jsx` integration.
+   - **Task Tracker Updated:** Marked all 5 Phase 2 tasks as complete (`[x]`). Total completed tasks: 25 / 107.
+
