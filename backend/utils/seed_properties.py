@@ -258,6 +258,9 @@ def seed_properties():
         print("Ensuring mock broker exists...")
         broker_email = os.environ.get("SEED_BROKER_EMAIL", "broker@nestquest.com")
         broker_password = os.environ.get("SEED_BROKER_PASSWORD", "broker123")
+        if not broker_email or not broker_password:
+            raise RuntimeError("SEED_BROKER_EMAIL and SEED_BROKER_PASSWORD must be configured in environment variables before seeding.")
+        
         broker = Broker.query.filter_by(email=broker_email).first()
         if not broker:
             hashed_pw = bcrypt.generate_password_hash(broker_password).decode("utf-8")

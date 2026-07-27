@@ -1,6 +1,7 @@
 from flask import Blueprint, request
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
 from marshmallow import Schema, fields, ValidationError, validate
+from sqlalchemy.exc import IntegrityError
 from models import db, User, Broker, Administrator
 from utils.responses import success_response, error_response
 from app import bcrypt
@@ -45,29 +46,36 @@ def register():
     # Hash password with bcrypt
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
     
-    if role == 'user':
-        new_user = User(
-            user_name=data['name'],
-            email=email,
-            phone=data['phone'],
-            password=hashed_password
-        )
-        db.session.add(new_user)
-        db.session.commit()
-        assigned_id = new_user.user_id
-    elif role == 'broker':
-        new_broker = Broker(
-            broker_name=data['name'],
-            email=email,
-            phone=data['phone'],
-            password=hashed_password,
-            company_name=data.get('company_name')
-        )
-        db.session.add(new_broker)
-        db.session.commit()
-        assigned_id = new_broker.broker_id
-    else:
-        return error_response(message="Invalid role specified", status_code=400)
+    try:
+        if role == 'user':
+            new_user = User(
+                user_name=data['name'],
+                email=email,
+                phone=data['phone'],
+                password=hashed_password
+            )
+            db.session.add(new_user)
+            db.session.commit()
+            assigned_id = new_user.user_id
+        elif role == 'broker':
+            new_broker = Broker(
+                broker_name=data['name'],
+                email=email,
+                phone=data['phone'],
+                password=hashed_password,
+                company_name=data.get('company_name')
+            )
+            db.session.add(new_broker)
+            db.session.commit()
+            assigned_id = new_broker.broker_id
+        else:
+            return error_response(message="Invalid role specified", status_code=400)
+    except IntegrityError:
+        db.session.rollback()
+        return error_response(message="Email is already registered", status_code=400)
+    except Exception as e:
+        db.session.rollback()
+        return error_response(message="Registration failed due to a server error", status_code=500)
         
     return success_response(
         data={
@@ -159,14 +167,17 @@ def login():
 def me():
     """
     GET /api/v1/auth/me
-    Return authenticated user profile based on JWT token claims.
+    Return authenticated user profile based on JWT token claims (resolves by immutable account ID).
     """
     claims = get_jwt()
     role = claims.get("role")
-    email = claims.get("email") or get_jwt_identity()
+    user_id = claims.get("id")
+
+    if not user_id or not role:
+        return error_response(message="Invalid or malformed token claims", status_code=401)
 
     if role == 'admin':
-        admin = Administrator.query.filter_by(email=email).first()
+        admin = db.session.get(Administrator, user_id)
         if not admin:
             return error_response(message="Admin profile not found", status_code=404)
         return success_response(data={
@@ -178,7 +189,7 @@ def me():
         }, message="Profile fetched successfully")
 
     elif role == 'broker':
-        broker = Broker.query.filter_by(email=email).first()
+        broker = db.session.get(Broker, user_id)
         if not broker:
             return error_response(message="Broker profile not found", status_code=404)
         return success_response(data={
@@ -192,7 +203,7 @@ def me():
         }, message="Profile fetched successfully")
 
     elif role == 'user':
-        usr = User.query.filter_by(email=email).first()
+        usr = db.session.get(User, user_id)
         if not usr:
             return error_response(message="User profile not found", status_code=404)
         return success_response(data={

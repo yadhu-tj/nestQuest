@@ -10,10 +10,8 @@ def role_required(*roles):
         @role_required('admin')
         @role_required('broker', 'admin')
     
-    - Validates presence and signature of JWT token in request headers.
-    - Decodes claims and verifies that 'role' matches one of the required roles.
-    - Returns HTTP 401 Unauthorized when JWT claims are missing.
-    - Returns HTTP 403 Forbidden when the role is absent or insufficient.
+    - Missing/expired/invalid tokens: Intercepted by Flask-JWT-Extended callbacks in app.py (HTTP 401).
+    - Insufficient role privileges: Intercepted by this decorator (HTTP 403 Forbidden).
     """
     def decorator(fn):
         @wraps(fn)

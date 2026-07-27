@@ -234,6 +234,14 @@ All endpoints are prefixed with `/api/v1/`. Responses follow a consistent envelo
 | `/auth/login` | POST | Authenticate and receive a JWT |
 | `/auth/me` | GET | Retrieve authenticated profile |
 | `/properties/` | GET, POST | List or create properties |
+| `/properties/<id>` | GET, PUT, DELETE | Manage a specific property |
+| `/search/` | POST | Submit a natural language search query |
+| `/bookings/` | GET, POST | View or create visit bookings |
+| `/admin/reports` | GET | Retrieve platform-level statistics |
+
+Authenticated requests require an `Authorization: Bearer <token>` header.
+
+---
 
 ### Authentication API Contract (Handoff Specification)
 
@@ -310,12 +318,6 @@ All endpoints are prefixed with `/api/v1/`. Responses follow a consistent envelo
   "message": "Profile fetched successfully"
 }
 ```
-| `/properties/<id>` | GET, PUT, DELETE | Manage a specific property |
-| `/search/` | POST | Submit a natural language search query |
-| `/bookings/` | GET, POST | View or create visit bookings |
-| `/admin/reports` | GET | Retrieve platform-level statistics |
-
-Authenticated requests require an `Authorization: Bearer <token>` header.
 
 ---
 

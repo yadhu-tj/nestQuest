@@ -12,14 +12,17 @@ from models import db, Administrator
 def seed_admin():
     """
     Seed the first administrator directly into the database.
-    Reads email from SEED_ADMIN_EMAIL (default admin@nestquest.com)
-    and password from SEED_ADMIN_PASSWORD (default admin123).
+    Requires SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD environment variables.
     """
+    admin_email = os.environ.get("SEED_ADMIN_EMAIL", "admin@nestquest.com")
+    admin_password = os.environ.get("SEED_ADMIN_PASSWORD", "admin123")
+    
+    if not admin_email or not admin_password:
+        raise RuntimeError("SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD must be configured in environment variables before seeding.")
+
     app = create_app()
     with app.app_context():
         print("Checking for existing administrator...")
-        admin_email = os.environ.get("SEED_ADMIN_EMAIL", "admin@nestquest.com")
-        admin_password = os.environ.get("SEED_ADMIN_PASSWORD", "admin123")
         existing_admin = Administrator.query.filter_by(email=admin_email).first()
         
         if existing_admin:
