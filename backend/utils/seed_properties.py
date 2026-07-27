@@ -256,10 +256,11 @@ def seed_properties():
     app = create_app()
     with app.app_context():
         print("Ensuring mock broker exists...")
-        broker_email = "broker@nestquest.com"
+        broker_email = os.environ.get("SEED_BROKER_EMAIL", "broker@nestquest.com")
+        broker_password = os.environ.get("SEED_BROKER_PASSWORD", "broker123")
         broker = Broker.query.filter_by(email=broker_email).first()
         if not broker:
-            hashed_pw = bcrypt.generate_password_hash("broker123").decode("utf-8")
+            hashed_pw = bcrypt.generate_password_hash(broker_password).decode("utf-8")
             broker = Broker(
                 broker_name="Prime Real Estate",
                 email=broker_email,

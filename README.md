@@ -172,7 +172,17 @@ pip install -r requirements.txt
 
 Create a PostgreSQL database named `nestquest`, then configure the environment variables described below.
 
+Initialize the PostgreSQL database tables and seed initial data:
+
 ```bash
+# Create database tables
+python -c "from app import create_app; from models import db; app = create_app(); app.app_context().push(); db.create_all()"
+
+# Seed administrator and property dataset
+python utils/seed_admin.py
+python utils/seed_properties.py
+
+# Start the Flask REST API server
 python app.py
 ```
 
@@ -192,16 +202,17 @@ The backend runs on `http://localhost:5000` and the frontend on `http://localhos
 
 Create a `.env` file inside the `backend` directory with the following keys:
 
-```
+```env
 DATABASE_URL=postgresql://username:password@localhost:5432/nestquest
-JWT_SECRET_KEY=
-GEMINI_API_KEY=
+SECRET_KEY=your_strong_flask_secret_key_here
+JWT_SECRET_KEY=your_strong_jwt_secret_key_here
+GEMINI_API_KEY=your_gemini_api_key_here
 CHROMA_PERSIST_PATH=./chroma_store
 UPLOAD_FOLDER=./static/uploads/properties
 FLASK_ENV=development
 ```
 
-This file is excluded from version control and must never be committed.
+> **Security Note:** `SECRET_KEY` and `JWT_SECRET_KEY` must be configured with strongly generated unique values in production environments. This file is excluded from version control and must never be committed.
 
 ---
 

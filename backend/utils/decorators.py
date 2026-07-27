@@ -12,7 +12,8 @@ def role_required(*roles):
     
     - Validates presence and signature of JWT token in request headers.
     - Decodes claims and verifies that 'role' matches one of the required roles.
-    - Returns HTTP 403 Forbidden with standard error envelope if unauthorized.
+    - Returns HTTP 401 Unauthorized when JWT claims are missing.
+    - Returns HTTP 403 Forbidden when the role is absent or insufficient.
     """
     def decorator(fn):
         @wraps(fn)

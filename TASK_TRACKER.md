@@ -191,7 +191,7 @@
 
 | Phase | Owner | Total Tasks | Done | Status |
 |---|---|---|---|---|
-| Pre-Coding | Both | 9 | 5 | `[~]` In Progress |
+| Pre-Coding | Both | 9 | 6 | `[~]` In Progress |
 | Phase 1 | Yadhu | 14 | 14 | `[x]` Done |
 | Phase 2 | Yadhu | 5 | 0 | `[ ]` Not Started |
 | Phase 3 | Jacob | 19 | 0 | `[ ]` Not Started |
@@ -199,4 +199,4 @@
 | Phase 5 | Jacob | 9 | 0 | `[ ]` Not Started |
 | Phase 6 | Both | 22 | 0 | `[ ]` Not Started |
 | Phase 7 | Both | 15 | 0 | `[ ]` Not Started |
-| **Total** | | **107** | **19** | |
+| **Total** | | **107** | **20** | |

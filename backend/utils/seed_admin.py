@@ -12,20 +12,21 @@ from models import db, Administrator
 def seed_admin():
     """
     Seed the first administrator directly into the database.
-    Email: admin@nestquest.com
-    Password: admin123
+    Reads email from SEED_ADMIN_EMAIL (default admin@nestquest.com)
+    and password from SEED_ADMIN_PASSWORD (default admin123).
     """
     app = create_app()
     with app.app_context():
         print("Checking for existing administrator...")
-        admin_email = "admin@nestquest.com"
+        admin_email = os.environ.get("SEED_ADMIN_EMAIL", "admin@nestquest.com")
+        admin_password = os.environ.get("SEED_ADMIN_PASSWORD", "admin123")
         existing_admin = Administrator.query.filter_by(email=admin_email).first()
         
         if existing_admin:
             print(f"Administrator with email '{admin_email}' already exists.")
             return
             
-        hashed_password = bcrypt.generate_password_hash("admin123").decode("utf-8")
+        hashed_password = bcrypt.generate_password_hash(admin_password).decode("utf-8")
         new_admin = Administrator(
             admin_name="Super Admin",
             email=admin_email,
