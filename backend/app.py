@@ -22,7 +22,11 @@ def create_app(config_name=None):
     # Load configuration
     app.config.from_object(config_by_name.get(config_name, config_by_name['default']))
     
-    # Configure CORS
+    # Ensure upload directory exists
+    if app.config.get('UPLOAD_FOLDER'):
+        os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    
+    # Configure CORS restricted to frontend dev server
     CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
     
     # Initialize extensions with app context
