@@ -300,12 +300,17 @@ def seed_properties():
                     img = PropertyImage(property_id=prop.property_id, image_url=img_url)
                     db.session.add(img)
 
-                # Attempt ChromaDB embedding if Phase 4 RAG service is active
+                # Sync to ChromaDB
                 try:
-                    from services.embedding_service import embed_property
-                    embed_property(prop)
-                except Exception:
-                    pass # ChromaDB will sync in Phase 4 via sync_chroma.py
+                    from services.embedding_service import EmbeddingService
+                    EmbeddingService.embed_property(
+                        property_id=prop.property_id,
+                        title=prop.title,
+                        description=prop.description,
+                        broker_notes=prop.broker_notes
+                    )
+                except Exception as e:
+                    print(f"Warning embedding property {prop.property_id}: {e}")
 
                 created_count += 1
 
