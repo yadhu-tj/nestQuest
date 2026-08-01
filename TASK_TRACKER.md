@@ -87,20 +87,20 @@
 
 | # | Task | Owner | Status | Notes |
 |---|---|---|---|---|
-| 4.1 | `services/embedding_service.py` — `init_chroma()` | Yadhu | `[ ]` | Collection: `nestquest_properties` |
-| 4.2 | `embedding_service.py` — `_sanitize_text()` | Yadhu | `[ ]` | Handle NULL broker_notes |
-| 4.3 | `embedding_service.py` — `embed_property()` | Yadhu | `[ ]` | Store with `property_id` metadata |
-| 4.4 | `embedding_service.py` — `update_property_embedding()` | Yadhu | `[ ]` | Delete old → insert new |
-| 4.5 | `embedding_service.py` — `delete_property_embedding()` | Yadhu | `[ ]` | |
-| 4.6 | `embedding_service.py` — `semantic_search()` | Yadhu | `[ ]` | Constrained to available_property_ids |
-| 4.7 | `services/gemini_service.py` — LangChain + Gemini setup | Yadhu | `[ ]` | Use `ChatGoogleGenerativeAI`, graceful degradation |
-| 4.8 | `services/rag_service.py` — Full 10-step pipeline | Yadhu | `[ ]` | See IMPLEMENTATION_PLAN Phase 4 |
-| 4.9 | `routes/search.py` — `POST /api/v1/search/` | Yadhu | `[ ]` | JWT required, user role |
-| 4.10 | `utils/sync_chroma.py` — Recovery script | Yadhu | `[ ]` | Run: `python utils/sync_chroma.py` |
-| 4.11 | Run `seed_properties.py` | Yadhu | `[ ]` | 20 properties in DB + ChromaDB |
-| 4.12 | RAG search tested end-to-end via Postman | Yadhu | `[ ]` | Verify semantic relevance + AI explanations |
-| 4.13 | Graceful degradation tested | Yadhu | `[ ]` | Invalid Gemini key → results return, no crash |
-| 4.14 | **Handoff to Jacob** — Share search endpoint response format | Yadhu | `[ ]` | Jacob builds SearchResults + AIExplanation against this |
+| 4.1 | `services/embedding_service.py` — `init_chroma()` | Yadhu | `[x]` | Collection: `nestquest_properties` |
+| 4.2 | `embedding_service.py` — `_sanitize_text()` | Yadhu | `[x]` | Handle NULL broker_notes |
+| 4.3 | `embedding_service.py` — `embed_property()` | Yadhu | `[x]` | Store with `property_id` metadata |
+| 4.4 | `embedding_service.py` — `update_property_embedding()` | Yadhu | `[x]` | Delete old → insert new |
+| 4.5 | `embedding_service.py` — `delete_property_embedding()` | Yadhu | `[x]` | |
+| 4.6 | `embedding_service.py` — `semantic_search()` | Yadhu | `[x]` | Constrained to available_property_ids |
+| 4.7 | `services/gemini_service.py` — LangChain + Gemini setup | Yadhu | `[x]` | Use `ChatGoogleGenerativeAI`, graceful degradation |
+| 4.8 | `services/rag_service.py` — Full 10-step pipeline | Yadhu | `[x]` | See IMPLEMENTATION_PLAN Phase 4 |
+| 4.9 | `routes/search.py` — `POST /api/v1/search/` | Yadhu | `[x]` | JWT required, user role |
+| 4.10 | `utils/sync_chroma.py` — Recovery script | Yadhu | `[x]` | Run: `python utils/sync_chroma.py` |
+| 4.11 | Run `seed_properties.py` | Yadhu | `[x]` | 20 properties in DB + ChromaDB |
+| 4.12 | RAG search tested end-to-end via Postman | Yadhu | `[x]` | Verify semantic relevance + AI explanations |
+| 4.13 | Graceful degradation tested | Yadhu | `[x]` | Missing/invalid Gemini key → results return, no crash |
+| 4.14 | **Handoff to Jacob** — Share search endpoint response format | Yadhu | `[x]` | Jacob builds SearchResults + AIExplanation against this |
 
 ---
 
@@ -195,8 +195,8 @@
 | Phase 1 | Yadhu | 14 | 14 | `[x]` Done |
 | Phase 2 | Yadhu | 5 | 5 | `[x]` Done |
 | Phase 3 | Jacob | 19 | 0 | `[ ]` Not Started |
-| Phase 4 | Yadhu | 14 | 0 | `[ ]` Not Started |
+| Phase 4 | Yadhu | 14 | 14 | `[x]` Done |
 | Phase 5 | Jacob | 9 | 0 | `[ ]` Not Started |
 | Phase 6 | Both | 22 | 0 | `[ ]` Not Started |
 | Phase 7 | Both | 15 | 0 | `[ ]` Not Started |
-| **Total** | | **107** | **25** | |
+| **Total** | | **107** | **39** | |

@@ -57,7 +57,48 @@ This is the progress document. Anything done to the project should be informed i
    - **`POST /api/v1/auth/register` (Task 2.1):** Implemented user and broker registration endpoint with input validation (`RegisterSchema`), email uniqueness check across `Administrator`, `Broker`, `User` tables, password hashing with `bcrypt`, role-aware DB insertion (`users` or `broker` table), and standard JSON envelope.
    - **`POST /api/v1/auth/login` (Task 2.2):** Implemented multi-table authentication endpoint querying `Administrator` -> `Broker` -> `User` sequentially by email for server-side role detection. Validates bcrypt password hashes and generates JWT access tokens with embedded `role`, `id`, `email`, `name` claims.
    - **`GET /api/v1/auth/me` (Task 2.3):** Implemented JWT-authenticated profile endpoint that decodes claims and returns role-aware account profile (`admin`, `broker`, or `user`).
-   - **Integration Testing (Task 2.4):** Verified complete Register -> Login -> Me authentication flow across all 3 roles using automated integration tests. Updated `JWT_SECRET_KEY` and `SECRET_KEY` in `.env` to >32 bytes.
-   - **Handoff Documentation (Task 2.5):** Documented complete Auth API payload contract in `README.md` for frontend `AuthContext.jsx` integration.
-   - **Task Tracker Updated:** Marked all 5 Phase 2 tasks as complete (`[x]`). Total completed tasks: 25 / 107.
+   - Integration Testing (Task 2.4): Verified complete Register -> Login -> Me authentication flow across all 3 roles using automated integration tests. Updated `JWT_SECRET_KEY` and `SECRET_KEY` in `.env` to >32 bytes.
+   - Handoff Documentation (Task 2.5): Documented complete Auth API payload contract in `README.md` for frontend `AuthContext.jsx` integration.
+   - Task Tracker Updated: Marked all 5 Phase 2 tasks as complete (`[x]`). Total completed tasks: 25 / 107.
 
+
+### Progress Update - August 1, 2026
+
+1. **Phase 4 — RAG Pipeline (Completed 14/14 tasks):**
+   - **Embedding Service (`services/embedding_service.py` - Tasks 4.1–4.6):**
+     - `init_chroma()`: Persistent ChromaDB client initialization using `CHROMA_PERSIST_PATH` and collection `nestquest_properties`.
+     - `_sanitize_text()`: Text sanitization logic to cleanly format property title, description, and broker notes while handling `NULL`/`None` values gracefully.
+     - `embed_property()`: Generates vector embeddings and upserts into ChromaDB with `{"property_id": str(id)}` metadata.
+     - `update_property_embedding()`: Re-embeds updated text and replaces existing ChromaDB vector.
+     - `delete_property_embedding()`: Vector deletion from ChromaDB by property ID metadata.
+     - `semantic_search()`: Performs semantic similarity search strictly constrained to PostgreSQL's `available_property_ids` via metadata filtering.
+   - **Gemini Service (`services/gemini_service.py` - Task 4.7):**
+     - Integrates `ChatGoogleGenerativeAI` from `langchain_google_genai` with model `gemini-1.5-flash`.
+     - Formats prompt with user query + retrieved property context.
+     - Generates tailored 1-2 sentence match explanations per property ID.
+     - Implements try/except block to ensure **graceful degradation** (returns `None` if Gemini API key is missing/invalid, preventing search crashes).
+   - **RAG Pipeline Orchestrator (`services/rag_service.py` - Task 4.8):**
+     - Implemented the complete 10-step RAG pipeline sequence:
+       1. Receives natural language search query string.
+       2. Validates query string is non-empty.
+       3. Queries PostgreSQL for available property IDs (`availability_status = 'Available'`).
+       4. Handles early return if zero properties are available in PostgreSQL.
+       5. Performs semantic similarity search in ChromaDB constrained to available IDs.
+       6. Handles early return if zero vector matches are found.
+       7. Hydrates full structured property details from PostgreSQL in exact ChromaDB similarity rank order.
+       8. Assembles prompt template combining query and property context.
+       9. Generates AI match explanations via Gemini with graceful degradation fallback.
+       10. Returns final ranked properties with AI explanations as standard JSON output.
+   - **Search API Route (`routes/search.py` - Task 4.9):**
+     - Implemented `POST /api/v1/search/` endpoint with `@jwt_required()` and `@role_required('user')` authorization guards.
+     - Validates non-empty search query and executes `RAGService.run_pipeline()`.
+   - **Recovery Utility (`utils/sync_chroma.py` - Task 4.10):**
+     - Standalone recovery script to reset ChromaDB collection and re-embed all properties from PostgreSQL.
+   - **Data Seeding & Verification (`utils/seed_properties.py` - Tasks 4.11–4.13):**
+     - Seeded 20 diverse mock properties into PostgreSQL and synchronized vector embeddings in ChromaDB.
+     - Verified end-to-end RAG search with Gemini AI match explanations (Task 4.12).
+     - Verified graceful degradation when Gemini API key is missing/invalid (Task 4.13).
+   - **Handoff Documentation (Task 4.14):**
+     - Documented `POST /api/v1/search/` request payload and response contract for frontend integration.
+   - **Task Tracker Updated:**
+     - Updated `TASK_TRACKER.md` to mark all 14 Phase 4 tasks as complete (`[x]`). Total completed tasks: 39 / 107.
