@@ -8,6 +8,7 @@ class Config:
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', 'dev_jwt_secret_key')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
+    GEMINI_MODEL = os.environ.get('GEMINI_MODEL', 'gemini-1.5-flash')
     CHROMA_PERSIST_PATH = os.environ.get('CHROMA_PERSIST_PATH', './chroma_store')
     UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER', './static/uploads/properties')
     
