@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 # Import all models here so that they are registered and available
-from .admin import Administrator
+from .administrator import Administrator
 from .broker import Broker
 from .user import User
 from .property import Property

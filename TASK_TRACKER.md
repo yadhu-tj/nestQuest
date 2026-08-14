@@ -9,13 +9,13 @@
 | # | Task | Owner | Status | Notes |
 |---|---|---|---|---|
 | P0 | PostgreSQL installed locally | Both | `[x]` | Create `nestquest` database |
-| P1 | Gemini API key obtained | Yadhu | `[~]` | Add to `.env` (To be added later by Yadhu) |
+| P1 | Gemini API key obtained | Yadhu | `[x]` | Add to `.env` |
 | P2 | Git repo initialized | Yadhu | `[x]` | |
 | P3 | `.gitignore` created | Yadhu | `[x]` | Include `.env`, `chroma_store/`, `__pycache__/`, `node_modules/`, `static/uploads/` |
 | P4 | Initial folder structure created | Yadhu | `[x]` | Match spec in `IMPLEMENTATION_PLAN.md` |
 | P5 | `.env` file created (not committed) | Yadhu | `[x]` | Use template from `PROJECT_CONTEXT.md` |
-| P6 | Wireframes done | Both | `[ ]` | Landing, Search Results, Broker Dashboard minimum |
-| P7 | UX spec documented | Yadhu | `[ ]` | |
+| P6 | Wireframes done | Jacob | `[ ]` | Landing, Search Results, Broker Dashboard minimum |
+| P7 | UX spec documented | Jacob | `[ ]` | |
 | P8 | Work split agreed | Both | `[ ]` | This document |
 
 ---
@@ -25,20 +25,20 @@
 
 | # | Task | Owner | Status | Notes |
 |---|---|---|---|---|
-| 1.1 | `config.py` — Dev/Prod config classes, load from `.env` | Yadhu | `[ ]` | PostgreSQL only, no SQLite |
-| 1.2 | `models/administrator.py` | Yadhu | `[ ]` | SERIAL PK |
-| 1.3 | `models/broker.py` | Yadhu | `[ ]` | SERIAL PK |
-| 1.4 | `models/user.py` | Yadhu | `[ ]` | Table name: `users` not `user` |
-| 1.5 | `models/property.py` | Yadhu | `[ ]` | Include `broker_notes` column |
-| 1.6 | `models/property_image.py` | Yadhu | `[ ]` | ON DELETE CASCADE |
-| 1.7 | `models/booking.py` | Yadhu | `[ ]` | ON DELETE CASCADE |
-| 1.8 | `requirements.txt` complete | Yadhu | `[ ]` | See `IMPLEMENTATION_PLAN.md` for full list |
-| 1.9 | `app.py` — Flask init, CORS, blueprints, static files | Yadhu | `[ ]` | CORS restricted to port 5173 |
-| 1.10 | `utils/responses.py` — `success_response`, `error_response` | Yadhu | `[ ]` | Used by every route |
-| 1.11 | `utils/decorators.py` — `role_required` decorator | Yadhu | `[ ]` | |
-| 1.12 | `utils/seed_admin.py` — Create first admin | Yadhu | `[ ]` | Run once manually |
-| 1.13 | `utils/seed_properties.py` — 20 mock properties | Yadhu | `[ ]` | Run after Phase 4. Rich broker_notes required |
-| 1.14 | DB tables created and verified in pgAdmin | Yadhu | `[ ]` | |
+| 1.1 | `config.py` — Dev/Prod config classes, load from `.env` | Yadhu | `[x]` | PostgreSQL only, no SQLite |
+| 1.2 | `models/administrator.py` | Yadhu | `[x]` | SERIAL PK |
+| 1.3 | `models/broker.py` | Yadhu | `[x]` | SERIAL PK |
+| 1.4 | `models/user.py` | Yadhu | `[x]` | Table name: `users` not `user` |
+| 1.5 | `models/property.py` | Yadhu | `[x]` | Include `broker_notes` column |
+| 1.6 | `models/property_image.py` | Yadhu | `[x]` | ON DELETE CASCADE |
+| 1.7 | `models/booking.py` | Yadhu | `[x]` | ON DELETE CASCADE |
+| 1.8 | `requirements.txt` complete | Yadhu | `[x]` | See `IMPLEMENTATION_PLAN.md` for full list |
+| 1.9 | `app.py` — Flask init, CORS, blueprints, static files | Yadhu | `[x]` | CORS restricted to port 5173 |
+| 1.10 | `utils/responses.py` — `success_response`, `error_response` | Yadhu | `[x]` | Used by every route |
+| 1.11 | `utils/decorators.py` — `role_required` decorator | Yadhu | `[x]` | |
+| 1.12 | `utils/seed_admin.py` — Create first admin | Yadhu | `[x]` | Run once manually |
+| 1.13 | `utils/seed_properties.py` — 20 mock properties | Yadhu | `[x]` | Run after Phase 4. Rich broker_notes required |
+| 1.14 | DB tables created and verified in pgAdmin | Yadhu | `[x]` | |
 
 ---
 
@@ -47,11 +47,11 @@
 
 | # | Task | Owner | Status | Notes |
 |---|---|---|---|---|
-| 2.1 | `POST /api/v1/auth/register` | Yadhu | `[ ]` | user or broker role, bcrypt hashing |
-| 2.2 | `POST /api/v1/auth/login` | Yadhu | `[ ]` | Query all 3 tables, role in JWT |
-| 2.3 | `GET /api/v1/auth/me` | Yadhu | `[ ]` | Decode JWT, return profile |
-| 2.4 | Auth endpoints tested in Postman | Yadhu | `[ ]` | Register → Login → Me flow |
-| 2.5 | **Handoff to Jacob** — Share auth API response format | Yadhu | `[ ]` | Jacob needs this for AuthContext |
+| 2.1 | `POST /api/v1/auth/register` | Yadhu | `[x]` | user or broker role, bcrypt hashing |
+| 2.2 | `POST /api/v1/auth/login` | Yadhu | `[x]` | Query all 3 tables, role in JWT |
+| 2.3 | `GET /api/v1/auth/me` | Yadhu | `[x]` | Decode JWT, return profile |
+| 2.4 | Auth endpoints tested in Postman | Yadhu | `[x]` | Register → Login → Me flow |
+| 2.5 | **Handoff to Jacob** — Share auth API response format | Yadhu | `[x]` | Jacob needs this for AuthContext |
 
 ---
 
@@ -87,20 +87,20 @@
 
 | # | Task | Owner | Status | Notes |
 |---|---|---|---|---|
-| 4.1 | `services/embedding_service.py` — `init_chroma()` | Yadhu | `[ ]` | Collection: `nestquest_properties` |
-| 4.2 | `embedding_service.py` — `_sanitize_text()` | Yadhu | `[ ]` | Handle NULL broker_notes |
-| 4.3 | `embedding_service.py` — `embed_property()` | Yadhu | `[ ]` | Store with `property_id` metadata |
-| 4.4 | `embedding_service.py` — `update_property_embedding()` | Yadhu | `[ ]` | Delete old → insert new |
-| 4.5 | `embedding_service.py` — `delete_property_embedding()` | Yadhu | `[ ]` | |
-| 4.6 | `embedding_service.py` — `semantic_search()` | Yadhu | `[ ]` | Constrained to available_property_ids |
-| 4.7 | `services/gemini_service.py` — LangChain + Gemini setup | Yadhu | `[ ]` | Use `ChatGoogleGenerativeAI`, graceful degradation |
-| 4.8 | `services/rag_service.py` — Full 10-step pipeline | Yadhu | `[ ]` | See IMPLEMENTATION_PLAN Phase 4 |
-| 4.9 | `routes/search.py` — `POST /api/v1/search/` | Yadhu | `[ ]` | JWT required, user role |
-| 4.10 | `utils/sync_chroma.py` — Recovery script | Yadhu | `[ ]` | Run: `python utils/sync_chroma.py` |
-| 4.11 | Run `seed_properties.py` | Yadhu | `[ ]` | 20 properties in DB + ChromaDB |
-| 4.12 | RAG search tested end-to-end via Postman | Yadhu | `[ ]` | Verify semantic relevance + AI explanations |
-| 4.13 | Graceful degradation tested | Yadhu | `[ ]` | Invalid Gemini key → results return, no crash |
-| 4.14 | **Handoff to Jacob** — Share search endpoint response format | Yadhu | `[ ]` | Jacob builds SearchResults + AIExplanation against this |
+| 4.1 | `services/embedding_service.py` — `init_chroma()` | Yadhu | `[x]` | Collection: `nestquest_properties` |
+| 4.2 | `embedding_service.py` — `_sanitize_text()` | Yadhu | `[x]` | Handle NULL broker_notes |
+| 4.3 | `embedding_service.py` — `embed_property()` | Yadhu | `[x]` | Store with `property_id` metadata |
+| 4.4 | `embedding_service.py` — `update_property_embedding()` | Yadhu | `[x]` | Delete old → insert new |
+| 4.5 | `embedding_service.py` — `delete_property_embedding()` | Yadhu | `[x]` | |
+| 4.6 | `embedding_service.py` — `semantic_search()` | Yadhu | `[x]` | Constrained to available_property_ids |
+| 4.7 | `services/gemini_service.py` — LangChain + Gemini setup | Yadhu | `[x]` | Use `ChatGoogleGenerativeAI`, graceful degradation |
+| 4.8 | `services/rag_service.py` — Full 10-step pipeline | Yadhu | `[x]` | See IMPLEMENTATION_PLAN Phase 4 |
+| 4.9 | `routes/search.py` — `POST /api/v1/search/` | Yadhu | `[x]` | JWT required, user role |
+| 4.10 | `utils/sync_chroma.py` — Recovery script | Yadhu | `[x]` | Run: `python utils/sync_chroma.py` |
+| 4.11 | Run `seed_properties.py` | Yadhu | `[x]` | 20 properties in DB + ChromaDB |
+| 4.12 | RAG search tested end-to-end via Postman | Yadhu | `[x]` | Verify semantic relevance + AI explanations |
+| 4.13 | Graceful degradation tested | Yadhu | `[x]` | Missing/invalid Gemini key → results return, no crash |
+| 4.14 | **Handoff to Jacob** — Share search endpoint response format | Yadhu | `[x]` | Jacob builds SearchResults + AIExplanation against this |
 
 ---
 
@@ -191,12 +191,12 @@
 
 | Phase | Owner | Total Tasks | Done | Status |
 |---|---|---|---|---|
-| Pre-Coding | Both | 9 | 5 | `[~]` In Progress |
-| Phase 1 | Yadhu | 14 | 0 | `[ ]` Not Started |
-| Phase 2 | Yadhu | 5 | 0 | `[ ]` Not Started |
+| Pre-Coding | Both | 9 | 6 | `[~]` In Progress |
+| Phase 1 | Yadhu | 14 | 14 | `[x]` Done |
+| Phase 2 | Yadhu | 5 | 5 | `[x]` Done |
 | Phase 3 | Jacob | 19 | 0 | `[ ]` Not Started |
-| Phase 4 | Yadhu | 14 | 0 | `[ ]` Not Started |
+| Phase 4 | Yadhu | 14 | 14 | `[x]` Done |
 | Phase 5 | Jacob | 9 | 0 | `[ ]` Not Started |
 | Phase 6 | Both | 22 | 0 | `[ ]` Not Started |
 | Phase 7 | Both | 15 | 0 | `[ ]` Not Started |
-| **Total** | | **107** | **5** | |
+| **Total** | | **107** | **39** | |

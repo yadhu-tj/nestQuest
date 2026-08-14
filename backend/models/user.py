@@ -10,3 +10,6 @@ class User(db.Model):
     phone = db.Column(db.String(15), nullable=False)
     password = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Relationships
+    bookings = db.relationship('Booking', backref='user', cascade='all, delete-orphan', passive_deletes=True)
