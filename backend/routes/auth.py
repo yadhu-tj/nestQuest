@@ -4,7 +4,7 @@ from marshmallow import Schema, fields, ValidationError, validate
 from sqlalchemy.exc import IntegrityError
 from models import db, User, Broker, Administrator
 from utils.responses import success_response, error_response
-from app import bcrypt
+from app_extensions import bcrypt
 
 auth_bp = Blueprint('auth', __name__)
 

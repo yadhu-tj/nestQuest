@@ -3,16 +3,13 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
-from flask_bcrypt import Bcrypt
+from app_extensions import bcrypt, jwt, migrate
 
 from config import config_by_name
 from models import db
 from utils.responses import error_response
 
 # Initialize extensions
-bcrypt = Bcrypt()
-jwt = JWTManager()
-migrate = Migrate()
 
 # Register JWT Error Handlers to maintain standard response envelope across all auth failures
 @jwt.unauthorized_loader
