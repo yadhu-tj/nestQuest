@@ -60,25 +60,25 @@
 
 | # | Task | Owner | Status | Notes |
 |---|---|---|---|---|
-| 3.1 | `GET /api/v1/properties/` | Jacob | `[ ]` | Public, optional filters |
-| 3.2 | `GET /api/v1/properties/<id>` | Jacob | `[ ]` | Include images |
-| 3.3 | `POST /api/v1/properties/` | Jacob | `[ ]` | Broker only. Trigger `embed_property()` after save |
-| 3.4 | `PUT /api/v1/properties/<id>` | Jacob | `[ ]` | Own properties only. Trigger re-embed if text changed |
-| 3.5 | `DELETE /api/v1/properties/<id>` | Jacob | `[ ]` | Cancel pending bookings first, then delete embedding |
-| 3.6 | `POST /api/v1/properties/<id>/images` | Jacob | `[ ]` | Max 5MB, jpg/jpeg/png/webp only |
-| 3.7 | `PATCH /api/v1/properties/<id>/availability` | Jacob | `[ ]` | No ChromaDB update needed |
-| 3.8 | `POST /api/v1/bookings/` | Jacob | `[ ]` | Validate availability before creating |
-| 3.9 | `GET /api/v1/bookings/` | Jacob | `[ ]` | Role-aware: user sees own, broker sees own properties' |
-| 3.10 | `PATCH /api/v1/bookings/<id>/status` | Jacob | `[ ]` | Broker only, valid status transitions |
-| 3.11 | `GET /api/v1/bookings/<id>` | Jacob | `[ ]` | |
-| 3.12 | `GET /api/v1/admin/brokers` | Jacob | `[ ]` | Admin only |
-| 3.13 | `DELETE /api/v1/admin/brokers/<id>` | Jacob | `[ ]` | Admin only |
-| 3.14 | `GET /api/v1/admin/users` | Jacob | `[ ]` | Admin only |
-| 3.15 | `DELETE /api/v1/admin/users/<id>` | Jacob | `[ ]` | Admin only |
-| 3.16 | `GET /api/v1/admin/properties` | Jacob | `[ ]` | Admin only |
-| 3.17 | `GET /api/v1/admin/reports` | Jacob | `[ ]` | Stats: properties, bookings, users, brokers |
-| 3.18 | All Phase 3 endpoints tested in Postman | Jacob | `[ ]` | |
-| 3.19 | **Handoff to Yadhu** — Confirm embedding hooks are called correctly | Jacob | `[ ]` | 3.3, 3.4, 3.5 call embedding_service |
+| 3.1 | `GET /api/v1/properties/` | Jacob | `[x]` | Public, optional filters |
+| 3.2 | `GET /api/v1/properties/<id>` | Jacob | `[x]` | Include images |
+| 3.3 | `POST /api/v1/properties/` | Jacob | `[x]` | Broker only. Trigger `embed_property()` after save |
+| 3.4 | `PUT /api/v1/properties/<id>` | Jacob | `[x]` | Own properties only. Trigger re-embed if text changed |
+| 3.5 | `DELETE /api/v1/properties/<id>` | Jacob | `[x]` | Cancel pending bookings first, then delete embedding |
+| 3.6 | `POST /api/v1/properties/<id>/images` | Jacob | `[x]` | Max 5MB, jpg/jpeg/png/webp only |
+| 3.7 | `PATCH /api/v1/properties/<id>/availability` | Jacob | `[x]` | No ChromaDB update needed |
+| 3.8 | `POST /api/v1/bookings/` | Jacob | `[x]` | Validate availability before creating |
+| 3.9 | `GET /api/v1/bookings/` | Jacob | `[x]` | Role-aware: user sees own, broker sees own properties' |
+| 3.10 | `PATCH /api/v1/bookings/<id>/status` | Jacob | `[x]` | Broker only, valid status transitions |
+| 3.11 | `GET /api/v1/bookings/<id>` | Jacob | `[x]` | |
+| 3.12 | `GET /api/v1/admin/brokers` | Jacob | `[x]` | Admin only |
+| 3.13 | `DELETE /api/v1/admin/brokers/<id>` | Jacob | `[x]` | Admin only |
+| 3.14 | `GET /api/v1/admin/users` | Jacob | `[x]` | Admin only |
+| 3.15 | `DELETE /api/v1/admin/users/<id>` | Jacob | `[x]` | Admin only |
+| 3.16 | `GET /api/v1/admin/properties` | Jacob | `[x]` | Admin only |
+| 3.17 | `GET /api/v1/admin/reports` | Jacob | `[x]` | Stats: properties, bookings, users, brokers |
+| 3.18 | All Phase 3 endpoints tested in Postman | Jacob | `[x]` | |
+| 3.19 | **Handoff to Yadhu** — Confirm embedding hooks are called correctly | Jacob | `[x]` | 3.3, 3.4, 3.5 call embedding_service |
 
 ---
 
@@ -194,9 +194,9 @@
 | Pre-Coding | Both | 9 | 6 | `[~]` In Progress |
 | Phase 1 | Yadhu | 14 | 14 | `[x]` Done |
 | Phase 2 | Yadhu | 5 | 5 | `[x]` Done |
-| Phase 3 | Jacob | 19 | 0 | `[ ]` Not Started |
+| Phase 3 | Jacob | 19 | 19 | `[x]` Done |
 | Phase 4 | Yadhu | 14 | 14 | `[x]` Done |
 | Phase 5 | Jacob | 9 | 0 | `[ ]` Not Started |
 | Phase 6 | Both | 22 | 0 | `[ ]` Not Started |
 | Phase 7 | Both | 15 | 0 | `[ ]` Not Started |
-| **Total** | | **107** | **39** | |
+| **Total** | | **107** | **58** | |

@@ -127,14 +127,28 @@ class GeminiService:
             "IMPORTANT: Use EXACTLY this format for each property, one per line, "
             "with NO markdown, NO bold, NO bullet points:\n"
             "Property ID <number>: <your explanation>\n\n"
-            "Begin:"
+"Begin:"
         )
 
         try:
             prompt = prompt_template.format(query=query_text, context=context_str)
             response = llm.invoke(prompt)
-            content = response.content if hasattr(response, 'content') else str(response)
-
+            
+            # Handle new response format: content can be string or list of content blocks
+            raw_content = response.content if hasattr(response, 'content') else str(response)
+            
+            # Extract text from content blocks if it's a list
+            if isinstance(raw_content, list):
+                text_parts = []
+                for block in raw_content:
+                    if isinstance(block, dict) and 'text' in block:
+                        text_parts.append(block['text'])
+                    elif isinstance(block, str):
+                        text_parts.append(block)
+                content = ' '.join(text_parts)
+            else:
+                content = str(raw_content)
+            
             explanations = cls._parse_explanations(content, valid_ids)
 
             # Log a warning if we couldn't extract explanations for some properties
