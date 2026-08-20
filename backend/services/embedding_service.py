@@ -101,6 +101,7 @@ class EmbeddingService:
             return matched_ids
         except Exception as e:
             logger.warning("Initial ChromaDB query failed (%s). Re-initializing collection and retrying...", e)
+            cls._client = None
             cls._collection = None
             try:
                 collection = cls.get_collection()
@@ -118,5 +119,4 @@ class EmbeddingService:
             except Exception as retry_e:
                 logger.exception("Semantic search failed in ChromaDB after retry")
                 raise retry_e
-
 

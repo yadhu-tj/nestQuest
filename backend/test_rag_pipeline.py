@@ -77,8 +77,8 @@ TEST_USER_EMAIL = "ragtest_user@nestquest.local"
 TEST_USER_PASSWORD = "RagTest123!"
 TEST_USER_PHONE = "9999999999"
 
-ADMIN_EMAIL = "admin@nestquest.com"
-ADMIN_PASSWORD = "admin123"
+ADMIN_EMAIL = os.environ.get("NESTQUEST_ADMIN_EMAIL", "admin@nestquest.com")
+ADMIN_PASSWORD = os.environ.get("NESTQUEST_ADMIN_PASSWORD", "admin123")
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -346,7 +346,7 @@ def test_6_sync_integrity(token):
 
 
 def test_7_role_and_auth_boundaries(user_token):
-    """/search/ must be user-only: 403 for broker/admin, 401 for missing/garbage token."""
+    """/search/ allows authenticated roles; missing/garbage token should return auth errors."""
     print("\n== Test 7: Role and auth boundaries on /search/ ==")
 
     admin_token = get_admin_token()
