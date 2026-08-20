@@ -6,14 +6,14 @@ from services.rag_service import RAGService
 
 search_bp = Blueprint('search', __name__)
 
-@search_bp.route('/', methods=['POST'])
+@search_bp.route('/', methods=['POST'], strict_slashes=False)
 @jwt_required()
-@role_required('user')
+@role_required('user', 'broker', 'admin')
 def search():
     """
     POST /api/v1/search/
     Natural language property search powered by RAG pipeline.
-    Requires JWT authentication with 'user' role.
+    Requires JWT authentication with 'user', 'broker', or 'admin' role.
     """
     data = request.get_json(silent=True)
     if not isinstance(data, dict):
