@@ -66,19 +66,26 @@ except ImportError:
 # CONFIG - edit these if auto-detection from .env doesn't work
 # ---------------------------------------------------------------------------
 API_BASE = os.environ.get("NESTQUEST_API_BASE", "http://localhost:5000/api/v1")
-DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://username:password@localhost:5432/nestquest")
+DATABASE_URL = os.environ.get("DATABASE_URL")
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL must be set in environment variables")
+
 SYNC_SCRIPT = os.environ.get("NESTQUEST_SYNC_SCRIPT", 
     os.path.join("utils", "sync_chroma.py") if os.path.exists(os.path.join("utils", "sync_chroma.py")) 
     else os.path.join("backend", "utils", "sync_chroma.py")
 )
 PYTHON_EXE = os.environ.get("NESTQUEST_PYTHON", sys.executable)
 
-TEST_USER_EMAIL = "ragtest_user@nestquest.local"
-TEST_USER_PASSWORD = "RagTest123!"
-TEST_USER_PHONE = "9999999999"
+TEST_USER_EMAIL = os.environ.get("NESTQUEST_TEST_USER_EMAIL", "ragtest_user@nestquest.local")
+TEST_USER_PASSWORD = os.environ.get("NESTQUEST_TEST_USER_PASSWORD")
+if not TEST_USER_PASSWORD:
+    raise RuntimeError("NESTQUEST_TEST_USER_PASSWORD must be set in environment variables")
+TEST_USER_PHONE = os.environ.get("NESTQUEST_TEST_USER_PHONE", "9999999999")
 
-ADMIN_EMAIL = os.environ.get("NESTQUEST_ADMIN_EMAIL", "admin@nestquest.com")
-ADMIN_PASSWORD = os.environ.get("NESTQUEST_ADMIN_PASSWORD", "admin123")
+ADMIN_EMAIL = os.environ.get("NESTQUEST_ADMIN_EMAIL")
+ADMIN_PASSWORD = os.environ.get("NESTQUEST_ADMIN_PASSWORD")
+if not ADMIN_EMAIL or not ADMIN_PASSWORD:
+    raise RuntimeError("NESTQUEST_ADMIN_EMAIL and NESTQUEST_ADMIN_PASSWORD must be set in environment variables")
 
 # ---------------------------------------------------------------------------
 # Helpers
