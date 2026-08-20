@@ -37,13 +37,13 @@ class GeminiService:
             pass
 
         if not model_name:
-            model_name = os.environ.get('GEMINI_MODEL', 'gemini-1.5-flash')
+            model_name = os.environ.get('GEMINI_MODEL', 'gemini-2.0-flash')
 
         try:
             return ChatGoogleGenerativeAI(
                 model=model_name,
                 google_api_key=api_key,
-                temperature=0.3,
+                temperature=0.2,
                 timeout=30.0,
                 max_retries=2
             )
@@ -62,7 +62,7 @@ class GeminiService:
         `valid_ids` are included in the result.
 
         Args:
-            content:   Raw text response from Gemini.
+            content:   Raw text, list of text blocks, or dict response from Gemini.
             valid_ids: Set of int property IDs that were sent in the prompt.
 
         Returns:
@@ -70,7 +70,21 @@ class GeminiService:
         """
         explanations = {}
 
-        for line in content.split('\n'):
+        if isinstance(content, list):
+            lines = []
+            for item in content:
+                if isinstance(item, str):
+                    lines.extend(item.split('\n'))
+                elif isinstance(item, dict) and 'text' in item:
+                    lines.extend(str(item['text']).split('\n'))
+                else:
+                    lines.extend(str(item).split('\n'))
+        elif isinstance(content, str):
+            lines = content.split('\n')
+        else:
+            lines = str(content).split('\n')
+
+        for line in lines:
             line = line.strip()
             if not line:
                 continue
