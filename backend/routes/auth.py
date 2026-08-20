@@ -1,12 +1,28 @@
 from flask import Blueprint, request
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity, get_jwt
 from marshmallow import Schema, fields, ValidationError, validate
 from sqlalchemy.exc import IntegrityError
 from models import db, User, Broker, Administrator
 from utils.responses import success_response, error_response
-from app import bcrypt
+from app import bcrypt, limiter
+import re
 
 auth_bp = Blueprint('auth', __name__)
+
+# Password complexity validator
+def validate_password_complexity(password):
+    """Validate password meets complexity requirements."""
+    if len(password) < 8:
+        raise ValidationError("Password must be at least 8 characters long")
+    if not re.search(r'[A-Z]', password):
+        raise ValidationError("Password must contain at least one uppercase letter")
+    if not re.search(r'[a-z]', password):
+        raise ValidationError("Password must contain at least one lowercase letter")
+    if not re.search(r'\d', password):
+        raise ValidationError("Password must contain at least one digit")
+    if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+        raise ValidationError("Password must contain at least one special character (!@#$%^&*(),.?\":{}|<>)")
+    return password
 
 # Validation Schemas
 class LoginSchema(Schema):
@@ -16,12 +32,13 @@ class LoginSchema(Schema):
 class RegisterSchema(Schema):
     name = fields.String(required=True, validate=validate.Length(min=2, max=100))
     email = fields.Email(required=True)
-    password = fields.String(required=True, validate=validate.Length(min=6))
+    password = fields.String(required=True, validate=validate_password_complexity)
     phone = fields.String(required=True, validate=validate.Length(min=7, max=15))
     role = fields.String(validate=validate.OneOf(['user', 'broker']), load_default='user')
     company_name = fields.String(validate=validate.Length(max=100), required=False, allow_none=True)
 
 @auth_bp.route('/register', methods=['POST'])
+@limiter.limit("5 per minute")
 def register():
     """
     POST /api/v1/auth/register
@@ -89,11 +106,13 @@ def register():
     )
 
 @auth_bp.route('/login', methods=['POST'])
+@limiter.limit("10 per minute")
 def login():
     """
     POST /api/v1/auth/login
     Authenticate Administrator, Broker, or User by email.
     Server detects role automatically by querying tables in order: Administrator -> Broker -> User.
+    Returns both access token (short-lived) and refresh token (long-lived).
     """
     schema = LoginSchema()
     try:
@@ -148,10 +167,12 @@ def login():
     }
     
     access_token = create_access_token(identity=email, additional_claims=additional_claims)
+    refresh_token = create_refresh_token(identity=email, additional_claims=additional_claims)
     
     return success_response(
         data={
             "access_token": access_token,
+            "refresh_token": refresh_token,
             "user": {
                 "id": user_id,
                 "name": user_name,
@@ -160,6 +181,31 @@ def login():
             }
         },
         message="Login successful"
+    )
+
+@auth_bp.route('/refresh', methods=['POST'])
+@jwt_required(refresh=True)
+@limiter.limit("30 per minute")
+def refresh():
+    """
+    POST /api/v1/auth/refresh
+    Generate a new access token using a valid refresh token.
+    """
+    current_user = get_jwt_identity()
+    claims = get_jwt()
+    
+    additional_claims = {
+        "role": claims.get("role"),
+        "id": claims.get("id"),
+        "email": claims.get("email"),
+        "name": claims.get("name")
+    }
+    
+    new_access_token = create_access_token(identity=current_user, additional_claims=additional_claims)
+    
+    return success_response(
+        data={"access_token": new_access_token},
+        message="Token refreshed successfully"
     )
 
 @auth_bp.route('/me', methods=['GET'])

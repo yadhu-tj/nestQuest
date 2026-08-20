@@ -4,6 +4,8 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 from config import config_by_name
 from models import db
@@ -13,6 +15,11 @@ from utils.responses import error_response
 bcrypt = Bcrypt()
 jwt = JWTManager()
 migrate = Migrate()
+limiter = Limiter(
+    key_func=get_remote_address,
+    storage_uri=os.environ.get('RATE_LIMIT_STORAGE_URL', 'memory://'),
+    default_limits=["200 per day", "50 per hour"]
+)
 
 # Register JWT Error Handlers to maintain standard response envelope across all auth failures
 @jwt.unauthorized_loader
@@ -40,14 +47,15 @@ def create_app(config_name=None):
     if app.config.get('UPLOAD_FOLDER'):
         os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     
-    # Configure CORS restricted to frontend dev server
-    CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
+    # Configure CORS restricted to configured origins
+    CORS(app, resources={r"/api/*": {"origins": app.config.get('CORS_ORIGINS', ["http://localhost:5173"])}})
     
     # Initialize extensions with app context
     db.init_app(app)
     bcrypt.init_app(app)
     jwt.init_app(app)
     migrate.init_app(app, db)
+    limiter.init_app(app)
     
     # Import blueprints
     from routes.auth import auth_bp
