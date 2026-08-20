@@ -12,10 +12,10 @@ class EmbeddingService:
     @classmethod
     def init_chroma(cls):
         """Initialize persistent ChromaDB collection."""
-        if cls._collection is None:
-            persist_path = os.environ.get('CHROMA_PERSIST_PATH', './chroma_store')
+        persist_path = os.environ.get('CHROMA_PERSIST_PATH', './chroma_store')
+        if cls._client is None:
             cls._client = chromadb.PersistentClient(path=persist_path)
-            cls._collection = cls._client.get_or_create_collection(name=cls.COLLECTION_NAME)
+        cls._collection = cls._client.get_or_create_collection(name=cls.COLLECTION_NAME)
         return cls._collection
 
     @classmethod
@@ -32,9 +32,7 @@ class EmbeddingService:
     @classmethod
     def get_collection(cls):
         """Get or initialize the ChromaDB collection."""
-        if cls._collection is None:
-            return cls.init_chroma()
-        return cls._collection
+        return cls.init_chroma()
 
     @staticmethod
     def _sanitize_text(title, description, broker_notes):
@@ -102,7 +100,23 @@ class EmbeddingService:
                         matched_ids.append(int(item['property_id']))
             return matched_ids
         except Exception as e:
-            logger.exception("Semantic search failed in ChromaDB")
-            raise
+            logger.warning("Initial ChromaDB query failed (%s). Re-initializing collection and retrying...", e)
+            cls._collection = None
+            try:
+                collection = cls.get_collection()
+                results = collection.query(
+                    query_texts=[query_text],
+                    n_results=n_results,
+                    where=where_clause
+                )
+                matched_ids = []
+                if results and 'metadatas' in results and results['metadatas']:
+                    for item in results['metadatas'][0]:
+                        if item and 'property_id' in item:
+                            matched_ids.append(int(item['property_id']))
+                return matched_ids
+            except Exception as retry_e:
+                logger.exception("Semantic search failed in ChromaDB after retry")
+                raise retry_e
 
 
