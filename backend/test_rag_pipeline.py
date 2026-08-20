@@ -164,8 +164,12 @@ def pick_test_broker_id():
 
 
 def run_sync_script():
-    result = subprocess.run([PYTHON_EXE, SYNC_SCRIPT], cwd="backend" if os.path.isdir("backend") else ".",
-                             capture_output=True, text=True, timeout=120)
+    result = subprocess.run(
+        [PYTHON_EXE, SYNC_SCRIPT],
+        capture_output=True,
+        text=True,
+        timeout=120,
+    )
     return result.returncode, result.stdout, result.stderr
 
 
