@@ -110,15 +110,15 @@
 
 | # | Task | Owner | Status | Notes |
 |---|---|---|---|---|
-| 5.1 | Install frontend dependencies | Jacob | `[ ]` | react-router-dom, axios, react-icons, react-hot-toast |
-| 5.2 | `services/api.js` — Axios instance + interceptors | Jacob | `[ ]` | baseURL, Bearer token, 401/403 handling |
-| 5.3 | `context/AuthContext.jsx` — Auth state + login/logout/register | Jacob | `[ ]` | Persist token in localStorage, decode role |
-| 5.4 | `App.jsx` — BrowserRouter + all routes defined | Jacob | `[ ]` | Wrap in AuthProvider |
-| 5.5 | `Layout/Navbar.jsx` — Dynamic based on auth state + role | Jacob | `[ ]` | Frosted glass on scroll |
-| 5.6 | `Layout/Footer.jsx` | Jacob | `[ ]` | |
-| 5.7 | `Layout/ProtectedRoute.jsx` — Auth + role guard | Jacob | `[ ]` | Redirect to /login if not authenticated |
-| 5.8 | `Layout/MainLayout.jsx` | Jacob | `[ ]` | |
-| 5.9 | Basic routing verified — all routes render without errors | Jacob | `[ ]` | |
+| 5.1 | Install frontend dependencies | Jacob | `[x]` | react-router-dom, axios, react-icons, react-hot-toast |
+| 5.2 | `services/api.js` — Axios instance + interceptors | Jacob | `[x]` | baseURL, Bearer token, 401/403 handling |
+| 5.3 | `context/AuthContext.jsx` — Auth state + login/logout/register | Jacob | `[x]` | Persist token in localStorage, decode role |
+| 5.4 | `App.jsx` — BrowserRouter + all routes defined | Jacob | `[x]` | Wrap in AuthProvider |
+| 5.5 | `Layout/Navbar.jsx` — Dynamic based on auth state + role | Jacob | `[x]` | Frosted glass on scroll |
+| 5.6 | `Layout/Footer.jsx` | Jacob | `[x]` | |
+| 5.7 | `Layout/ProtectedRoute.jsx` — Auth + role guard | Jacob | `[x]` | Redirect to /login if not authenticated |
+| 5.8 | `Layout/MainLayout.jsx` | Jacob | `[x]` | |
+| 5.9 | Basic routing verified — all routes render without errors | Jacob | `[x]` | |
 
 ---
 
@@ -128,22 +128,22 @@
 
 | # | Task | Owner | Status | Notes |
 |---|---|---|---|---|
-| 6.1 | `Common/PropertyCard.jsx` | Jacob | `[ ]` | Reusable, hover lift effect |
-| 6.2 | `Common/LoadingSpinner.jsx` | Jacob | `[ ]` | |
-| 6.3 | `Common/Modal.jsx` | Jacob | `[ ]` | For confirmations |
-| 6.4 | `Common/StatusBadge.jsx` | Jacob | `[ ]` | Booking + availability statuses |
-| 6.5 | `Search/SearchBar.jsx` | Jacob | `[ ]` | Typewriter placeholder effect |
-| 6.6 | `Search/AIExplanation.jsx` | Jacob | `[ ]` | Handle null ai_explanation gracefully |
-| 6.7 | `Broker/PropertyForm.jsx` | Jacob | `[ ]` | Image upload, client-side validation |
-| 6.8 | `Broker/BookingList.jsx` | Jacob | `[ ]` | Confirm/Cancel actions |
-| 6.9 | `pages/Home.jsx` | Jacob | `[ ]` | Hero, search bar, how it works, featured listings |
-| 6.10 | `pages/Login.jsx` | Jacob | `[ ]` | Single form, no role selector |
-| 6.11 | `pages/Register.jsx` | Jacob | `[ ]` | Role selector, extra field for broker |
-| 6.12 | `pages/SearchResults.jsx` | Jacob | `[ ]` | Skeleton loaders, results + AI explanation cards |
-| 6.13 | `pages/PropertyDetails.jsx` | Jacob | `[ ]` | Image gallery, details, booking button |
-| 6.14 | `pages/UserDashboard.jsx` | Jacob | `[ ]` | Booking history, profile |
-| 6.15 | `pages/BrokerDashboard.jsx` | Jacob | `[ ]` | Property list, add/edit, booking management |
-| 6.16 | `pages/AdminDashboard.jsx` | Jacob | `[ ]` | Stats, manage brokers/users/properties |
+| 6.1 | `Common/PropertyCard.jsx` | Jacob | `[x]` | Reusable, hover lift effect |
+| 6.2 | `Common/LoadingSpinner.jsx` | Jacob | `[x]` | |
+| 6.3 | `Common/Modal.jsx` | Jacob | `[x]` | For confirmations |
+| 6.4 | `Common/StatusBadge.jsx` | Jacob | `[x]` | Booking + availability statuses |
+| 6.5 | `Search/SearchBar.jsx` | Jacob | `[x]` | Typewriter placeholder effect |
+| 6.6 | `Search/AIExplanation.jsx` | Jacob | `[x]` | Handle null ai_explanation gracefully |
+| 6.7 | `Broker/PropertyForm.jsx` | Jacob | `[x]` | Image upload, client-side validation |
+| 6.8 | `Broker/BookingList.jsx` | Jacob | `[x]` | Confirm/Cancel actions |
+| 6.9 | `pages/Home.jsx` | Jacob | `[x]` | Hero, search bar, how it works, featured listings |
+| 6.10 | `pages/Login.jsx` | Jacob | `[x]` | Single form, no role selector |
+| 6.11 | `pages/Register.jsx` | Jacob | `[x]` | Role selector, extra field for broker |
+| 6.12 | `pages/SearchResults.jsx` | Jacob | `[x]` | Skeleton loaders, results + AI explanation cards |
+| 6.13 | `pages/PropertyDetails.jsx` | Jacob | `[x]` | Image gallery, details, booking button |
+| 6.14 | `pages/UserDashboard.jsx` | Jacob | `[x]` | Booking history, profile |
+| 6.15 | `pages/BrokerDashboard.jsx` | Jacob | `[x]` | Property list, add/edit, booking management |
+| 6.16 | `pages/AdminDashboard.jsx` | Jacob | `[x]` | Stats, manage brokers/users/properties |
 | 6.17 | Framer Motion installed | Yadhu | `[ ]` | `npm install framer-motion` |
 | 6.18 | Dual-mode toggle button — fixed position, icon switch | Yadhu | `[ ]` | House ↔ Person icon |
 | 6.19 | Portfolio mode — curtain reveal transition | Yadhu | `[ ]` | Framer Motion `AnimatePresence` |
@@ -196,7 +196,7 @@
 | Phase 2 | Yadhu | 5 | 5 | `[x]` Done |
 | Phase 3 | Jacob | 19 | 19 | `[x]` Done |
 | Phase 4 | Yadhu | 14 | 14 | `[x]` Done |
-| Phase 5 | Jacob | 9 | 0 | `[ ]` Not Started |
-| Phase 6 | Both | 22 | 0 | `[ ]` Not Started |
+| Phase 5 | Jacob | 9 | 9 | `[x]` Done |
+| Phase 6 | Both | 22 | 16 | `[~]` In Progress |
 | Phase 7 | Both | 15 | 0 | `[ ]` Not Started |
-| **Total** | | **107** | **58** | |
+| **Total** | | **107** | **83** | |

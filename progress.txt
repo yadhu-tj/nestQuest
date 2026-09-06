@@ -1,104 +1,14 @@
-This is the progress document. Anything done to the project should be informed into this.
-
-### Progress Update - July 26, 2026
-
-1. **Database Verification (P0):**
-   - Verified that PostgreSQL is running locally on port 5432 and successfully connected to the `nestquest` database.
-
-2. **Environment & Dependencies Setup:**
-   - Cleared and rebuilt the broken Python virtual environment (`venv`) to align with the system's active Python 3.14.6 interpreter.
-   - Installed all backend dependencies from `requirements.txt` (and added `flask-bcrypt` to the requirements).
-
-3. **Version Control Setup (P3):**
-   - Updated root and backend `.gitignore` files to properly ignore `static/uploads/` and `chroma_store/`.
-
-4. **Project Directory Restructuring (P4 & P5):**
-   - Cleaned up the old scaffolding layout and restructured the backend into a modular layout:
-     - `config.py`: Dev & Prod configs with strict database URL checks.
-     - `app.py`: Central Flask application factory.
-     - `models/`: Modular models matching SQL schema (Admin, Broker, User, Property, PropertyImage, Booking).
-     - `routes/`: Blueprint routing stubs under the `/api/v1/` prefix (auth, properties, bookings, search, admin).
-     - `services/`: ChromaDB and RAG service placeholders.
-     - `utils/`: Custom role decorators, standardized response formatting, and seeding stubs.
-   - Successfully verified the new structure by inspecting registered Flask routes.
-
-5. **Task Tracking Updated:**
-   - Marked P0, P2, P3, P4, P5 as complete (`[x]`) and P1 as in progress (`[~]`) in `TASK_TRACKER.md`.
+.\venv\Scripts\Activate.ps1
+python run.py
+npm run dev
 
 
-### Progress Update - July 27, 2026
-
-1. **Phase 1 — Backend Foundation & Database Schema (Completed 14/14 tasks):**
-   - **Configuration (`config.py` & `.env`):** Strictly enforced PostgreSQL database connection string check (`postgresql://...`) with error handling to prohibit SQLite. Added `JWT_SECRET_KEY`, `SECRET_KEY`, `CHROMA_PERSIST_PATH`, and `UPLOAD_FOLDER` to `backend/.env`.
-   - **Database Models (`models/`):**
-     - `administrator.py`: Table `administrator` with `admin_id (SERIAL PK)`, `admin_name`, `email (UNIQUE)`, `password`, `created_at`.
-     - `broker.py`: Table `broker` with `broker_id (SERIAL PK)`, `broker_name`, `email (UNIQUE)`, `phone`, `password`, `company_name`, `created_at`, and `properties` relationship.
-     - `user.py`: Table `users` (avoiding PG reserved word `user`) with `user_id (SERIAL PK)`, `user_name`, `email (UNIQUE)`, `phone`, `password`, `created_at`, and `bookings` relationship.
-     - `property.py`: Table `property` with `property_id (SERIAL PK)`, `broker_id (FK)`, `title`, `description`, `broker_notes` (key RAG field), `property_type`, `price`, `location`, `bedrooms`, `bathrooms`, `area_sqft`, `availability_status`, `created_at`, plus `images` and `bookings` relationships.
-     - `property_image.py`: Table `property_image` with `image_id (SERIAL PK)`, `property_id (FK ON DELETE CASCADE)`, `image_url`.
-     - `booking.py`: Table `booking` with `booking_id (SERIAL PK)`, `user_id (FK ON DELETE CASCADE)`, `property_id (FK ON DELETE CASCADE)`, `booking_date`, `visit_date`, `status` (`Pending`, `Confirmed`, `Completed`, `Cancelled`).
-   - **Dependencies (`requirements.txt`):** Updated and normalized all 14 required packages.
-   - **App Factory (`app.py`):** Configured Flask app, CORS restricted to `http://localhost:5173`, registered all 5 blueprints under `/api/v1/`, ensured upload folder creation, and added `/health` endpoint.
-   - **Utilities (`utils/`):**
-     - `responses.py`: Standard JSON envelopes (`success_response`, `error_response`).
-     - `decorators.py`: `@role_required(*roles)` security decorator with JWT verification and HTTP 403 authorization guards.
-     - `seed_admin.py`: Standalone script to seed default admin (`admin@nestquest.com` / `admin123`).
-     - `seed_properties.py`: Property seeder containing 20 diverse mock properties with rich lifestyle `broker_notes`.
-   - **Database Creation & Execution:**
-     - Created all 6 tables in PostgreSQL `nestquest` database (`administrator`, `broker`, `property`, `property_image`, `users`, `booking`).
-     - Executed `seed_admin.py` and verified admin user creation.
-     - Manually verified Flask server `/health` route returning HTTP 200 OK.
-   - **IDE Workspace Configuration (`.vscode/settings.json`):**
-     - Created `.vscode/settings.json` setting `python.defaultInterpreterPath` to `backend/venv/Scripts/python.exe` and adding `backend` to `extraPaths` to fix import squiggles in VS Code.
-   - **Task Tracker Updated:**
-     - Updated `TASK_TRACKER.md` to mark all 14 Phase 1 tasks as complete (`[x]`). Total completed tasks: 20 / 107.
-
-2. **Phase 2 — Authentication & Authorization (Completed 5/5 tasks):**
-   - **`POST /api/v1/auth/register` (Task 2.1):** Implemented user and broker registration endpoint with input validation (`RegisterSchema`), email uniqueness check across `Administrator`, `Broker`, `User` tables, password hashing with `bcrypt`, role-aware DB insertion (`users` or `broker` table), and standard JSON envelope.
-   - **`POST /api/v1/auth/login` (Task 2.2):** Implemented multi-table authentication endpoint querying `Administrator` -> `Broker` -> `User` sequentially by email for server-side role detection. Validates bcrypt password hashes and generates JWT access tokens with embedded `role`, `id`, `email`, `name` claims.
-   - **`GET /api/v1/auth/me` (Task 2.3):** Implemented JWT-authenticated profile endpoint that decodes claims and returns role-aware account profile (`admin`, `broker`, or `user`).
-   - Integration Testing (Task 2.4): Verified complete Register -> Login -> Me authentication flow across all 3 roles using automated integration tests. Updated `JWT_SECRET_KEY` and `SECRET_KEY` in `.env` to >32 bytes.
-   - Handoff Documentation (Task 2.5): Documented complete Auth API payload contract in `README.md` for frontend `AuthContext.jsx` integration.
-   - Task Tracker Updated: Marked all 5 Phase 2 tasks as complete (`[x]`). Total completed tasks: 25 / 107.
 
 
-### Progress Update - August 1, 2026
 
-1. **Phase 4 — RAG Pipeline (Completed 14/14 tasks):**
-   - **Embedding Service (`services/embedding_service.py` - Tasks 4.1–4.6):**
-     - `init_chroma()`: Persistent ChromaDB client initialization using `CHROMA_PERSIST_PATH` and collection `nestquest_properties`.
-     - `_sanitize_text()`: Text sanitization logic to cleanly format property title, description, and broker notes while handling `NULL`/`None` values gracefully.
-     - `embed_property()`: Generates vector embeddings and upserts into ChromaDB with `{"property_id": str(id)}` metadata.
-     - `update_property_embedding()`: Re-embeds updated text and replaces existing ChromaDB vector.
-     - `delete_property_embedding()`: Vector deletion from ChromaDB by property ID metadata.
-     - `semantic_search()`: Performs semantic similarity search strictly constrained to PostgreSQL's `available_property_ids` via metadata filtering.
-   - **Gemini Service (`services/gemini_service.py` - Task 4.7):**
-     - Integrates `ChatGoogleGenerativeAI` from `langchain_google_genai` with model `gemini-1.5-flash`.
-     - Formats prompt with user query + retrieved property context.
-     - Generates tailored 1-2 sentence match explanations per property ID.
-     - Implements try/except block to ensure **graceful degradation** (returns `None` if Gemini API key is missing/invalid, preventing search crashes).
-   - **RAG Pipeline Orchestrator (`services/rag_service.py` - Task 4.8):**
-     - Implemented the complete 10-step RAG pipeline sequence:
-       1. Receives natural language search query string.
-       2. Validates query string is non-empty.
-       3. Queries PostgreSQL for available property IDs (`availability_status = 'Available'`).
-       4. Handles early return if zero properties are available in PostgreSQL.
-       5. Performs semantic similarity search in ChromaDB constrained to available IDs.
-       6. Handles early return if zero vector matches are found.
-       7. Hydrates full structured property details from PostgreSQL in exact ChromaDB similarity rank order.
-       8. Assembles prompt template combining query and property context.
-       9. Generates AI match explanations via Gemini with graceful degradation fallback.
-       10. Returns final ranked properties with AI explanations as standard JSON output.
-   - **Search API Route (`routes/search.py` - Task 4.9):**
-     - Implemented `POST /api/v1/search/` endpoint with `@jwt_required()` and `@role_required('user')` authorization guards.
-     - Validates non-empty search query and executes `RAGService.run_pipeline()`.
-   - **Recovery Utility (`utils/sync_chroma.py` - Task 4.10):**
-     - Standalone recovery script to reset ChromaDB collection and re-embed all properties from PostgreSQL.
-   - **Data Seeding & Verification (`utils/seed_properties.py` - Tasks 4.11–4.13):**
-     - Seeded 20 diverse mock properties into PostgreSQL and synchronized vector embeddings in ChromaDB.
-     - Verified end-to-end RAG search with Gemini AI match explanations (Task 4.12).
-     - Verified graceful degradation when Gemini API key is missing/invalid (Task 4.13).
-   - **Handoff Documentation (Task 4.14):**
-     - Documented `POST /api/v1/search/` request payload and response contract for frontend integration.
-   - **Task Tracker Updated:**
-     - Updated `TASK_TRACKER.md` to mark all 14 Phase 4 tasks as complete (`[x]`). Total completed tasks: 39 / 107.
+Role	Email	Password
+User	testuser@nestquest.com	password123
+Broker	broker@nestquest.com	password123
+Broker	testbroker@nestquest.com	password123
+Admin	admin@nestquest.com	admin123
+reviewuser@nestquest.com Password@123

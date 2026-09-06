@@ -6,7 +6,7 @@ from models import db, Property, PropertyImage, Broker, Booking
 
 property_bp = Blueprint('property', __name__)
 
-@property_bp.route('/', methods=['GET'])
+@property_bp.route('/', methods=['GET'], strict_slashes=False)
 def get_properties():
     # Public route to get all properties with optional query filters
     query = Property.query
@@ -117,7 +117,7 @@ def get_property(property_id):
     
     return success_response(data=result, message="Property retrieved successfully")
 
-@property_bp.route('/', methods=['POST'])
+@property_bp.route('/', methods=['POST'], strict_slashes=False)
 @jwt_required()
 @role_required('broker')
 def create_property():
