@@ -63,6 +63,7 @@ def create_app(config_name=None):
     from routes.booking import booking_bp
     from routes.search import search_bp
     from routes.admin import admin_bp
+    from routes.saved_property import saved_property_bp
     
     # Register blueprints under /api/v1/
     app.register_blueprint(auth_bp, url_prefix='/api/v1/auth')
@@ -70,6 +71,7 @@ def create_app(config_name=None):
     app.register_blueprint(booking_bp, url_prefix='/api/v1/bookings')
     app.register_blueprint(search_bp, url_prefix='/api/v1/search')
     app.register_blueprint(admin_bp, url_prefix='/api/v1/admin')
+    app.register_blueprint(saved_property_bp, url_prefix='/api/v1/saved-properties')
     
     @app.route('/health')
     def health_check():

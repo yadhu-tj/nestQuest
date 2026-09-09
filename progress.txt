@@ -102,3 +102,99 @@ This is the progress document. Anything done to the project should be informed i
      - Documented `POST /api/v1/search/` request payload and response contract for frontend integration.
    - **Task Tracker Updated:**
      - Updated `TASK_TRACKER.md` to mark all 14 Phase 4 tasks as complete (`[x]`). Total completed tasks: 39 / 107.
+
+
+### Progress Update - August 15, 2026
+
+1. **Phase 3 — Properties, Bookings & Admin Routes (Completed 19/19 tasks, Owner: Jacob):**
+   - **Properties CRUD (Tasks 3.1–3.7):**
+     - `GET /api/v1/properties/` (3.1): Public endpoint with optional filters (type, location, price range, bedrooms, bathrooms, status).
+     - `GET /api/v1/properties/<id>` (3.2): Detailed property view with image gallery.
+     - `POST /api/v1/properties/` (3.3): Broker-only creation with validation, triggers `embed_property()` after save for ChromaDB sync.
+     - `PUT /api/v1/properties/<id>` (3.4): Broker-only update (own properties), triggers re-embedding if text fields changed.
+     - `DELETE /api/v1/properties/<id>` (3.5): Broker-only deletion, cancels pending bookings first, then deletes ChromaDB embedding.
+     - `POST /api/v1/properties/<id>/images` (3.6): Image upload (max 5MB, jpg/jpeg/png/webp), stores in `static/uploads/`.
+     - `PATCH /api/v1/properties/<id>/availability` (3.7): Broker-only availability toggle, no ChromaDB update needed.
+   - **Bookings (Tasks 3.8–3.11):**
+     - `POST /api/v1/bookings/` (3.8): User booking creation with availability validation.
+     - `GET /api/v1/bookings/` (3.9): Role-aware listing — users see own bookings, brokers see bookings for their properties.
+     - `PATCH /api/v1/bookings/<id>/status` (3.10): Broker-only status transitions (Pending → Confirmed/Completed/Cancelled).
+     - `GET /api/v1/bookings/<id>` (3.11): Booking detail endpoint.
+   - **Admin Routes (Tasks 3.12–3.17):**
+     - `GET /api/v1/admin/brokers` (3.12): Admin-only broker listing with stats.
+     - `DELETE /api/v1/admin/brokers/<id>` (3.13): Admin-only broker deletion with cascade (properties, bookings, embeddings).
+     - `GET /api/v1/admin/users` (3.14): Admin-only user listing with stats.
+     - `DELETE /api/v1/admin/users/<id>` (3.15): Admin-only user deletion with cascade (bookings).
+     - `GET /api/v1/admin/properties` (3.16): Admin-only property listing across all brokers.
+     - `GET /api/v1/admin/reports` (3.17): Dashboard stats (properties, bookings, users, brokers).
+   - **Testing & Handoff (Tasks 3.18–3.19):**
+     - All Phase 3 endpoints tested in Postman (3.18).
+     - Handoff to Yadhu confirming embedding hooks called correctly in 3.3, 3.4, 3.5 (3.19).
+   - **Task Tracker Updated:** All 19 Phase 3 tasks marked `[x]`. Total completed tasks: 58 / 107.
+
+
+### Progress Update - August 15, 2026 (continued)
+
+1. **Phase 5 — Frontend Foundation (Completed 9/9 tasks, Owner: Jacob):**
+   - **Frontend Setup (Task 5.1):** Installed dependencies — `react-router-dom`, `axios`, `react-icons`, `react-hot-toast`, `vite`, `tailwindcss`.
+   - **API Service (Task 5.2):** `services/api.js` — Axios instance with `baseURL`, Bearer token interceptors, automatic 401/403 handling (logout/redirect).
+   - **Auth Context (Task 5.3):** `context/AuthContext.jsx` — Global auth state, login/logout/register, JWT persistence in `localStorage`, role decoding for route guards.
+   - **Routing & Layout (Tasks 5.4–5.8):**
+     - `App.jsx` (5.4): `BrowserRouter` with all routes defined, wrapped in `AuthProvider`.
+     - `Layout/Navbar.jsx` (5.5): Dynamic nav based on auth state + role, frosted glass effect on scroll.
+     - `Layout/Footer.jsx` (5.6): Site footer.
+     - `Layout/ProtectedRoute.jsx` (5.7): Auth + role guard component, redirects to `/login` if unauthorized.
+     - `Layout/MainLayout.jsx` (5.8): Shared layout wrapper for dashboard pages.
+   - **Routing Verification (Task 5.9):** All routes render without errors, role-based redirects functional.
+   - **Task Tracker Updated:** All 9 Phase 5 tasks marked `[x]`. Total completed tasks: 67 / 107.
+
+
+### Progress Update - August 15, 2026 (continued)
+
+1. **Phase 6 — Frontend Pages & Components (Jacob's portion: 16/16 tasks completed, Tasks 6.1–6.16):**
+   - **Common Components (Tasks 6.1–6.4):**
+     - `Common/PropertyCard.jsx` (6.1): Reusable card with hover lift effect, image, title, price, location, status badge.
+     - `Common/LoadingSpinner.jsx` (6.2): Accessible spinner with ARIA live region.
+     - `Common/Modal.jsx` (6.3): Confirmation modal with `onConfirm`/`onClose`, focus trap, ESC to close.
+     - `Common/StatusBadge.jsx` (6.4): Color-coded badges for booking (Pending/Confirmed/Completed/Cancelled) and availability (Available/Unavailable/Rented) statuses.
+   - **Search Components (Tasks 6.5–6.6):**
+     - `Search/SearchBar.jsx` (6.5): Typewriter placeholder effect, submit handler, clear button.
+     - `Search/AIExplanation.jsx` (6.6): Renders AI match explanation, handles `null`/`undefined` gracefully with fallback.
+   - **Broker Components (Tasks 6.7–6.8):**
+     - `Broker/PropertyForm.jsx` (6.7): Full property form with image upload preview, client-side validation, broker notes textarea.
+     - `Broker/BookingList.jsx` (6.8): Tabbed view (Pending/Confirmed/History), confirm/cancel actions with modal confirmation.
+   - **Pages (Tasks 6.9–6.16):**
+     - `pages/Home.jsx` (6.9): Hero section with search bar, "How it works" steps, featured property carousel.
+     - `pages/Login.jsx` (6.10): Single form (email/password), role-agnostic, remembers me, redirects by role.
+     - `pages/Register.jsx` (6.11): Role selector (User/Broker), conditional company field for brokers, password strength meter.
+     - `pages/SearchResults.jsx` (6.12): Skeleton loaders, property grid with AI explanation cards, pagination, empty state.
+     - `pages/PropertyDetails.jsx` (6.13): Image gallery with thumbnails, full details, booking CTA, save/unsave toggle.
+     - `pages/UserDashboard.jsx` (6.14): Tabs for Bookings / Saved Properties / Profile, edit profile modal, cancel booking flow.
+     - `pages/BrokerDashboard.jsx` (6.15): Property tabs (All/Available/Unavailable/Rented), add/edit/delete with confirmation, booking management, profile tab.
+     - `pages/AdminDashboard.jsx` (6.16): Overview stats cards, tabs for Brokers/Users/Properties with tables, delete confirmation modals, edit user/broker modals.
+   - **Build & Runtime Fixes (during Phase 6):**
+     - Fixed duplicate `handleSubmit` in `Login.jsx`.
+     - Fixed JSX syntax errors in `UserDashboard.jsx`, `BrokerDashboard.jsx`, `AdminDashboard.jsx` (missing braces, duplicate `onClick` props).
+     - Added missing `react-icons/fi` imports (`FiUser`, `FiFilter`, `FiLogIn`, `FiSettings`, `FiBell`, `FiMail`, `FiPhone`, `FiHelpCircle`) to `BrokerDashboard.jsx`.
+     - Fixed Admin Dashboard delete flow: added click handlers (`handleDeleteBrokerClick`, `handleDeleteUserClick`) to open confirmation modals before deletion (matching Properties pattern).
+   - **Task Tracker Updated:** Tasks 6.1–6.16 marked `[x]` (Jacob). Tasks 6.17–6.22 (Yadhu) remain `[ ]`. Total completed tasks: 83 / 107.
+
+2. **Pre-Coding Checklist Update:**
+   - P6 (Wireframes): `[ ]` Not started (Jacob).
+   - P7 (UX spec): `[ ]` Not started (Jacob).
+   - P8 (Work split): `[ ]` Not started (Both).
+   - **Task Tracker Updated:** Pre-Coding 6/9 done, 3 in progress.
+
+### Progress Summary (as of TASK_TRACKER.md)
+
+| Phase | Owner | Total Tasks | Done | Status |
+|---|---|---|---|---|
+| Pre-Coding | Both | 9 | 6 | `[~]` In Progress |
+| Phase 1 | Yadhu | 14 | 14 | `[x]` Done |
+| Phase 2 | Yadhu | 5 | 5 | `[x]` Done |
+| Phase 3 | Jacob | 19 | 19 | `[x]` Done |
+| Phase 4 | Yadhu | 14 | 14 | `[x]` Done |
+| Phase 5 | Jacob | 9 | 9 | `[x]` Done |
+| Phase 6 | Both | 22 | 16 | `[~]` In Progress |
+| Phase 7 | Both | 15 | 0 | `[ ]` Not Started |
+| **Total** | | **107** | **83** | |

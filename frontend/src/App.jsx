@@ -1,23 +1,63 @@
 ﻿import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import MainLayout from './components/Layout/MainLayout';
+import ProtectedRoute from './components/Layout/ProtectedRoute';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import SearchResults from './pages/SearchResults';
+import PropertyDetails from './pages/PropertyDetails';
+import BrokerDashboard from './pages/BrokerDashboard';
+import AdminDashboard from './pages/AdminDashboard';
+import UserDashboard from './pages/UserDashboard';
 
 function App() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center font-sans text-center p-8 bg-gray-50 text-gray-800">
-      <h1 className="text-5xl font-extrabold text-blue-600 mb-2">NestQuest</h1>
-      <h2 className="text-2xl font-semibold text-gray-700 mb-2">Intelligent Rental & Real Estate Matchmaker</h2>
-      <p className="text-lg text-gray-500 mb-8">AI-Powered Conversational Property Search</p>
-      
-      <div className="w-full max-w-2xl bg-white p-4 rounded-xl shadow-lg flex items-center border border-gray-200">
-        <input 
-          type="text" 
-          placeholder="E.g. Looking for a pet-friendly apartment near Infopark..." 
-          className="flex-grow p-3 text-lg bg-transparent outline-none"
-        />
-        <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200 shadow-md">
-          Search
-        </button>
-      </div>
-    </div>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route
+              path="/search"
+              element={
+                <ProtectedRoute allowedRoles={['user', 'broker', 'admin']}>
+                  <SearchResults />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/property/:id" element={<PropertyDetails />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute allowedRoles={['user']}>
+                  <UserDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/broker/*"
+              element={
+                <ProtectedRoute allowedRoles={['broker']}>
+                  <BrokerDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/*"
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

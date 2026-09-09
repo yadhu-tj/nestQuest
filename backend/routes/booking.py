@@ -7,7 +7,7 @@ from datetime import datetime, date
 
 booking_bp = Blueprint('booking', __name__)
 
-@booking_bp.route('/', methods=['POST'])
+@booking_bp.route('/', methods=['POST'], strict_slashes=False)
 @jwt_required()
 @role_required('user')
 def create_booking():
@@ -74,7 +74,7 @@ def create_booking():
         db.session.rollback()
         return error_response(message=f"Failed to create booking: {str(e)}", status_code=500)
 
-@booking_bp.route('/', methods=['GET'])
+@booking_bp.route('/', methods=['GET'], strict_slashes=False)
 @jwt_required()
 def get_bookings():
     # Role-aware: User sees own, Broker sees bookings for own properties, Admin sees all
