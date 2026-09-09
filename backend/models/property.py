@@ -8,7 +8,7 @@ class Property(db.Model):
     broker_id = db.Column(db.Integer, db.ForeignKey('broker.broker_id', ondelete='CASCADE'), nullable=False)
     title = db.Column(db.String(150), nullable=False)
     description = db.Column(db.Text)
-    broker_notes = db.Column(db.Text)
+    broker_notes = db.Column(db.Text)  # Key RAG field, embedded into ChromaDB
     property_type = db.Column(db.String(50), nullable=False)
     price = db.Column(db.Numeric(10, 2), nullable=False)
     location = db.Column(db.String(150), nullable=False)

@@ -4,14 +4,35 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 from config import config_by_name
 from models import db
+from utils.responses import error_response
 
 # Initialize extensions
 bcrypt = Bcrypt()
 jwt = JWTManager()
 migrate = Migrate()
+limiter = Limiter(
+    key_func=get_remote_address,
+    storage_uri=os.environ.get('RATE_LIMIT_STORAGE_URL', 'memory://'),
+    default_limits=["200 per day", "50 per hour"]
+)
+
+# Register JWT Error Handlers to maintain standard response envelope across all auth failures
+@jwt.unauthorized_loader
+def custom_unauthorized_callback(error_string):
+    return error_response(message=f"Authorization token missing: {error_string}", status_code=401)
+
+@jwt.invalid_token_loader
+def custom_invalid_token_callback(error_string):
+    return error_response(message=f"Invalid or malformed token: {error_string}", status_code=401)
+
+@jwt.expired_token_loader
+def custom_expired_token_callback(jwt_header, jwt_payload):
+    return error_response(message="Token has expired. Please log in again.", status_code=401)
 
 def create_app(config_name=None):
     if not config_name:
@@ -22,14 +43,19 @@ def create_app(config_name=None):
     # Load configuration
     app.config.from_object(config_by_name.get(config_name, config_by_name['default']))
     
-    # Configure CORS
-    CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
+    # Ensure upload directory exists
+    if app.config.get('UPLOAD_FOLDER'):
+        os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    
+    # Configure CORS restricted to configured origins
+    CORS(app, resources={r"/api/*": {"origins": app.config.get('CORS_ORIGINS', ["http://localhost:5173"])}})
     
     # Initialize extensions with app context
     db.init_app(app)
     bcrypt.init_app(app)
     jwt.init_app(app)
     migrate.init_app(app, db)
+    limiter.init_app(app)
     
     # Import blueprints
     from routes.auth import auth_bp

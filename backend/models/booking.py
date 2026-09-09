@@ -10,3 +10,4 @@ class Booking(db.Model):
     booking_date = db.Column(db.Date, nullable=False, default=date.today)
     visit_date = db.Column(db.Date, nullable=False)
     status = db.Column(db.String(20), nullable=False, default='Pending')
+    # status values: 'Pending', 'Confirmed', 'Completed', 'Cancelled'
