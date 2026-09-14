@@ -36,10 +36,10 @@ export default function AdminDashboard() {
     setError('');
     try {
       const [statsRes, brokersRes, usersRes, propertiesRes] = await Promise.all([
-        api.get('/admin/reports'),
-        api.get('/admin/brokers'),
-        api.get('/admin/users'),
-        api.get('/admin/properties'),
+        api.get('/api/v1/admin/reports'),
+        api.get('/api/v1/admin/brokers'),
+        api.get('/api/v1/admin/users'),
+        api.get('/api/v1/admin/properties'),
       ]);
       setStats(statsRes.data.data);
       setBrokers(brokersRes.data.data || []);
@@ -62,7 +62,7 @@ export default function AdminDashboard() {
     if (!brokerToDelete) return;
     setIsDeleting(true);
     try {
-      await api.delete(`/admin/brokers/${brokerToDelete.broker_id}`);
+      await api.delete(`/api/v1/admin/brokers/${brokerToDelete.broker_id}`);
       setBrokers(prev => prev.filter(b => b.broker_id !== brokerToDelete.broker_id));
       if (stats) {
         setStats(prev => ({ ...prev, total_brokers: prev.total_brokers - 1 }));
@@ -80,7 +80,7 @@ export default function AdminDashboard() {
     if (!userToDelete) return;
     setIsDeleting(true);
     try {
-      await api.delete(`/admin/users/${userToDelete.user_id}`);
+      await api.delete(`/api/v1/admin/users/${userToDelete.user_id}`);
       setUsers(prev => prev.filter(u => u.user_id !== userToDelete.user_id));
       if (stats) {
         setStats(prev => ({ ...prev, total_users: prev.total_users - 1 }));
@@ -98,7 +98,7 @@ export default function AdminDashboard() {
     if (!propertyToDelete) return;
     setIsDeleting(true);
     try {
-      await api.delete(`/admin/properties/${propertyToDelete.property_id}`);
+      await api.delete(`/api/v1/admin/properties/${propertyToDelete.property_id}`);
       setProperties(prev => prev.filter(p => p.property_id !== propertyToDelete.property_id));
       if (stats) {
         setStats(prev => ({ ...prev, total_properties: prev.total_properties - 1 }));
