@@ -140,7 +140,8 @@ export default function PropertyForm() {
 
   const removeExistingImage = async (imageUrl) => {
     try {
-      await api.delete(`/properties/${id}/images/${encodeURIComponent(imageUrl)}`);
+      const filename = imageUrl.split('/').pop();
+      await api.delete(`/properties/${id}/images/${encodeURIComponent(filename)}`);
       setExistingImages((prev) => prev.filter((img) => img !== imageUrl));
     } catch (error) {
       console.error('Failed to delete image:', error);

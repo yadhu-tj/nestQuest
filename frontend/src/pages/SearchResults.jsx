@@ -34,7 +34,7 @@ export default function SearchResults() {
 
       setResults(data.results || []);
       setCount(data.count || 0);
-      setMessage(data.message || '');
+      setMessage(response.data.message || data.message || '');
     } catch (err) {
       const message = err.response?.data?.message || 'Search failed. Please try again.';
       setError(message);

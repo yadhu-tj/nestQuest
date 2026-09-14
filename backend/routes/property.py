@@ -440,3 +440,51 @@ def toggle_availability(property_id):
     except Exception as e:
         db.session.rollback()
         return error_response(message=f"Failed to update availability: {str(e)}", status_code=500)
+
+@property_bp.route('/<int:property_id>/images/<path:image_url>', methods=['DELETE'])
+@jwt_required()
+@role_required('broker')
+def delete_property_image(property_id, image_url):
+    # Broker-only route: delete a specific image from own property
+    import os
+    from urllib.parse import unquote
+
+    claims = get_jwt()
+    broker_id = claims.get("id")
+
+    if not broker_id:
+        return error_response(message="Invalid token: missing broker ID", status_code=401)
+
+    prop = Property.query.get_or_404(property_id)
+
+    if prop.broker_id != broker_id:
+        return error_response(message="Unauthorized: you can only delete images of your own properties", status_code=403)
+
+    decoded_url = unquote(image_url)
+
+    # Search for matching PropertyImage record
+    image_record = PropertyImage.query.filter(
+        PropertyImage.property_id == property_id,
+        (PropertyImage.image_url == decoded_url) | (PropertyImage.image_url.endswith(decoded_url))
+    ).first()
+
+    if not image_record:
+        return error_response(message="Image record not found", status_code=404)
+
+    try:
+        # Remove physical file if it exists
+        full_path = os.path.join(current_app.config['UPLOAD_FOLDER'], '..', image_record.image_url)
+        full_path = os.path.abspath(full_path)
+        if os.path.exists(full_path):
+            try:
+                os.remove(full_path)
+            except OSError:
+                pass
+
+        db.session.delete(image_record)
+        db.session.commit()
+
+        return success_response(message="Image deleted successfully")
+    except Exception as e:
+        db.session.rollback()
+        return error_response(message=f"Failed to delete image: {str(e)}", status_code=500)

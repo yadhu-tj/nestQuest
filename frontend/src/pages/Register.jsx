@@ -117,6 +117,7 @@ export default function Register() {
         email: formData.email.trim().toLowerCase(),
         password: formData.password,
         phone: formData.phone.trim(),
+        ...(role === 'broker' && { company_name: formData.company_name.trim() }),
       };
 
       await register(submitData, role);

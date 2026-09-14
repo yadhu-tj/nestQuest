@@ -1,5 +1,6 @@
 from flask import Blueprint, request
 from utils.responses import success_response, error_response
+from utils.decorators import role_required
 from flask_jwt_extended import jwt_required, get_jwt
 from models import db, SavedProperty, Property, PropertyImage, Broker
 
@@ -7,6 +8,7 @@ saved_property_bp = Blueprint('saved_property', __name__)
 
 @saved_property_bp.route('/', methods=['POST'], strict_slashes=False)
 @jwt_required()
+@role_required('user')
 def save_property():
     """
     POST /api/v1/saved-properties/
@@ -17,8 +19,12 @@ def save_property():
         return error_response(message="Invalid JSON payload", status_code=400)
     
     property_id = data.get('property_id')
-    if not property_id or not isinstance(property_id, int):
-        return error_response(message="property_id is required and must be an integer", status_code=400)
+    if property_id is None:
+        return error_response(message="property_id is required", status_code=400)
+    try:
+        property_id = int(property_id)
+    except (ValueError, TypeError):
+        return error_response(message="property_id must be an integer", status_code=400)
     
     # Get user_id from JWT claims
     claims = get_jwt()
@@ -55,6 +61,7 @@ def save_property():
 
 @saved_property_bp.route('/<int:property_id>', methods=['DELETE'])
 @jwt_required()
+@role_required('user')
 def unsave_property(property_id):
     """
     DELETE /api/v1/saved-properties/<property_id>
@@ -82,6 +89,7 @@ def unsave_property(property_id):
 
 @saved_property_bp.route('/', methods=['GET'], strict_slashes=False)
 @jwt_required()
+@role_required('user')
 def get_saved_properties():
     """
     GET /api/v1/saved-properties/
@@ -139,6 +147,7 @@ def get_saved_properties():
 
 @saved_property_bp.route('/check/<int:property_id>', methods=['GET'])
 @jwt_required()
+@role_required('user')
 def check_saved_status(property_id):
     """
     GET /api/v1/saved-properties/check/<property_id>

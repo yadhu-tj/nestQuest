@@ -178,9 +178,8 @@ def get_booking(booking_id):
 
 @booking_bp.route('/<int:booking_id>/status', methods=['PATCH'])
 @jwt_required()
-@role_required('broker')
 def update_booking_status(booking_id):
-    # Broker-only route: confirm or cancel booking with valid status transitions
+    # Role-aware route: Broker manages bookings for own properties, User can cancel own pending/confirmed booking, Admin can update any
     from marshmallow import Schema, fields, ValidationError, validate
     
     class BookingStatusSchema(Schema):
@@ -192,19 +191,28 @@ def update_booking_status(booking_id):
     except ValidationError as err:
         return error_response(message="Validation error", status_code=400, data=err.messages)
     
-    # Get broker_id from JWT claims
     claims = get_jwt()
-    broker_id = claims.get("id")
+    user_id = claims.get("id")
+    role = claims.get("role")
     
-    if not broker_id:
-        return error_response(message="Invalid token: missing broker ID", status_code=401)
+    if not user_id or not role:
+        return error_response(message="Invalid token claims", status_code=401)
     
     booking = Booking.query.get_or_404(booking_id)
-    
-    # Verify broker owns the property this booking is for
     prop = Property.query.get(booking.property_id)
-    if not prop or prop.broker_id != broker_id:
-        return error_response(message="Unauthorized: you can only manage bookings for your own properties", status_code=403)
+
+    if role == 'user':
+        if booking.user_id != user_id:
+            return error_response(message="Unauthorized: you can only update your own bookings", status_code=403)
+        if data['status'] != 'Cancelled':
+            return error_response(message="Unauthorized: users can only cancel bookings", status_code=403)
+    elif role == 'broker':
+        if not prop or prop.broker_id != user_id:
+            return error_response(message="Unauthorized: you can only manage bookings for your own properties", status_code=403)
+    elif role == 'admin':
+        pass
+    else:
+        return error_response(message="Unauthorized: invalid role", status_code=403)
     
     # Valid status transitions
     valid_transitions = {

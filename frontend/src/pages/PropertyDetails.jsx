@@ -45,18 +45,19 @@ export default function PropertyDetails() {
   }, [id]);
 
   const fetchSavedStatus = useCallback(async () => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || role !== 'user' || (!id && !property?.property_id)) {
       setIsSaved(false);
       return;
     }
     try {
-      const response = await savedPropertiesApi.checkStatus(id);
+      const targetPropId = property?.property_id || parseInt(id, 10);
+      const response = await savedPropertiesApi.checkStatus(targetPropId);
       setIsSaved(response.data.data?.is_saved || false);
     } catch (err) {
       console.error('Failed to check saved status:', err);
       setIsSaved(false);
     }
-  }, [id, isAuthenticated]);
+  }, [id, isAuthenticated, role, property]);
 
   useEffect(() => {
     fetchProperty();
@@ -64,19 +65,24 @@ export default function PropertyDetails() {
 
   useEffect(() => {
     fetchSavedStatus();
-  }, [fetchSavedStatus, property]);
+  }, [fetchSavedStatus]);
 
   const handleSaveProperty = async () => {
     if (!isAuthenticated) {
       setShowLoginPrompt(true);
       return;
     }
+    if (role !== 'user') {
+      alert('Only users can save properties.');
+      return;
+    }
+    const targetPropId = property?.property_id || parseInt(id, 10);
     try {
       if (isSaved) {
-        await savedPropertiesApi.unsave(id);
+        await savedPropertiesApi.unsave(targetPropId);
         setIsSaved(false);
       } else {
-        await savedPropertiesApi.save(id);
+        await savedPropertiesApi.save(targetPropId);
         setIsSaved(true);
       }
     } catch (err) {

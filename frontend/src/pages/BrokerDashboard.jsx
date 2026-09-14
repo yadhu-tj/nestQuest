@@ -40,14 +40,16 @@ export default function BrokerDashboard() {
         params.append('availability_status', statusFilter);
       }
       const response = await api.get(`/properties/?${params.toString()}`);
-      setProperties(response.data.data || []);
+      const allProps = response.data.data || [];
+      const brokerProps = user?.id ? allProps.filter(p => p.broker_id === user.id) : allProps;
+      setProperties(brokerProps);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to load properties');
       setProperties([]);
     } finally {
       setIsLoading(false);
     }
-  }, [statusFilter]);
+  }, [statusFilter, user?.id]);
 
   useEffect(() => {
     if (isAuthenticated && role === 'broker') {
