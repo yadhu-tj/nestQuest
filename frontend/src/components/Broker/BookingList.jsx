@@ -30,6 +30,9 @@ export default function BookingList() {
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [pendingAction, setPendingAction] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [viewBookingDetails, setViewBookingDetails] = useState(null);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [isFetchingDetails, setIsFetchingDetails] = useState(false);
 
   const fetchBookings = useCallback(async () => {
     setIsLoading(true);
@@ -77,7 +80,20 @@ export default function BookingList() {
     return result;
   }, [bookings, filterStatus, sortConfig]);
 
-  const handleStatusAction = (booking, action) => {
+  const handleStatusAction = async (booking, action) => {
+    if (action.newStatus === 'view') {
+      setIsFetchingDetails(true);
+      try {
+        const response = await api.get(`/bookings/${booking.booking_id}`);
+        setViewBookingDetails(response.data.data);
+        setShowViewModal(true);
+      } catch (err) {
+        alert(err.response?.data?.message || 'Failed to fetch booking details');
+      } finally {
+        setIsFetchingDetails(false);
+      }
+      return;
+    }
     setSelectedBooking(booking);
     setPendingAction(action);
     setShowStatusModal(true);
@@ -422,6 +438,42 @@ export default function BookingList() {
         }
         isLoading={isUpdating}
       />
+
+      {/* View Booking Details Modal */}
+      {showViewModal && viewBookingDetails && (
+        <div className="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true">
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowViewModal(false)} />
+          <div className="flex min-h-full items-center justify-center p-4">
+            <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-xl p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Booking Details</h3>
+              <div className="space-y-3 text-sm text-gray-700">
+                <p><strong>Booking ID:</strong> #{viewBookingDetails.booking_id}</p>
+                <p><strong>Property:</strong> {viewBookingDetails.property_title}</p>
+                <p><strong>Location:</strong> {viewBookingDetails.property_location}</p>
+                <p><strong>Price:</strong> ₹{viewBookingDetails.property_price ? Number(viewBookingDetails.property_price).toLocaleString() : '—'}/mo</p>
+                <p><strong>User Name:</strong> {viewBookingDetails.user_name}</p>
+                <p><strong>User Email:</strong> {viewBookingDetails.user_email || '—'}</p>
+                <p><strong>User Phone:</strong> {viewBookingDetails.user_phone || '—'}</p>
+                <p><strong>Visit Date:</strong> {formatDate(viewBookingDetails.visit_date)}</p>
+                <p><strong>Booked On:</strong> {formatDateTime(viewBookingDetails.booking_date)}</p>
+                <div className="flex items-center gap-2">
+                  <strong>Status:</strong>
+                  <StatusBadge status={viewBookingDetails.status} type="booking" size="sm" />
+                </div>
+              </div>
+              <div className="mt-6 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => setShowViewModal(false)}
+                  className="px-5 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

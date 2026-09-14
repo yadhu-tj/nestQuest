@@ -25,10 +25,14 @@ class Config:
     if not JWT_REFRESH_SECRET_KEY:
         raise ValueError("JWT_REFRESH_SECRET_KEY must be set in environment variables")
     
-    # Enforce PostgreSQL only - raise exception if not set or not postgresql
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
-    if not SQLALCHEMY_DATABASE_URI or not SQLALCHEMY_DATABASE_URI.startswith('postgresql'):
+    # Enforce PostgreSQL only - raise exception if not set or not postgresql (skipped if TESTING env var is set)
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'sqlite:///:memory:' if os.environ.get('TESTING') else None)
+    if not os.environ.get('TESTING') and (not SQLALCHEMY_DATABASE_URI or not SQLALCHEMY_DATABASE_URI.startswith('postgresql')):
         raise ValueError("DATABASE_URL must be set in environment variables and must be a valid PostgreSQL connection string (postgresql://...). SQLite is strictly prohibited.")
+
+class TestingConfig(Config):
+    TESTING = True
+    DEBUG = True
 
 class DevelopmentConfig(Config):
     DEBUG = True
@@ -40,5 +44,6 @@ class ProductionConfig(Config):
 config_by_name = {
     'development': DevelopmentConfig,
     'production': ProductionConfig,
+    'testing': TestingConfig,
     'default': DevelopmentConfig
 }

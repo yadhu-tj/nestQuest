@@ -368,6 +368,9 @@ def update_profile():
         return error_response(message=f"Failed to update profile: {str(e)}", status_code=500)
 
 
+# In-memory store for reset tokens: token -> {"email": str, "expires_at": datetime}
+RESET_TOKENS = {}
+
 # Forgot Password / Reset Password Endpoints
 @auth_bp.route('/forgot-password', methods=['POST'])
 @limiter.limit("3 per minute")
@@ -384,7 +387,7 @@ def forgot_password():
     
     email = data['email'].strip().lower()
     
-    # Check if email exists in any user table (don't reveal which one for security)
+    # Check if email exists in any user table
     user = User.query.filter_by(email=email).first()
     broker = Broker.query.filter_by(email=email).first()
     admin = Administrator.query.filter_by(email=email).first()
@@ -396,15 +399,16 @@ def forgot_password():
             message="If the email exists, a password reset link has been sent."
         )
     
-    # Generate a secure reset token (valid for 1 hour)
     import secrets
     from datetime import datetime, timedelta
     
     reset_token = secrets.token_urlsafe(32)
     expires_at = datetime.utcnow() + timedelta(hours=1)
     
-    # For development/demo, we'll return the token directly
-    # In production, this would be sent via email
+    RESET_TOKENS[reset_token] = {
+        "email": email,
+        "expires_at": expires_at
+    }
     
     return success_response(
         data={
@@ -432,24 +436,40 @@ def reset_password():
     token = data['token']
     new_password = data['password']
     
-    # In a real implementation, you would validate the token from your token store
-    # For this implementation, we'll check against a simple in-memory store
-    # In production, validate against your token storage (DB, Redis, etc.)
+    from datetime import datetime
     
-    # For demo purposes, we'll require the token to be passed but we can't validate it
-    # without a proper token store. In a real app, you'd have a PasswordResetToken model.
+    token_info = RESET_TOKENS.get(token)
+    if not token_info:
+        return error_response(message="Invalid or expired reset token", status_code=400)
     
-    # Hash the new password
+    if datetime.utcnow() > token_info['expires_at']:
+        RESET_TOKENS.pop(token, None)
+        return error_response(message="Reset token has expired", status_code=400)
+
+    email = token_info['email']
     hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
     
-    # In a real implementation, you would:
-    # 1. Validate the token
-    # 2. Find the user by the token's associated email
-    # 3. Update their password
-    # 4. Invalidate the token
+    # Find account and update password
+    user = User.query.filter_by(email=email).first()
+    broker = Broker.query.filter_by(email=email).first()
+    admin = Administrator.query.filter_by(email=email).first()
     
-    # For now, we'll return success but note that actual password update requires token validation
-    return success_response(
-        message="Password reset successful. In a full implementation, the password would be updated after token validation.",
-        data={"note": "Token validation and password update logic needs a proper token store"}
-    )
+    try:
+        if user:
+            user.password = hashed_password
+        elif broker:
+            broker.password = hashed_password
+        elif admin:
+            admin.password = hashed_password
+        else:
+            return error_response(message="Associated account not found", status_code=404)
+
+        db.session.commit()
+        RESET_TOKENS.pop(token, None)
+
+        return success_response(
+            message="Password has been reset successfully. You can now log in with your new password."
+        )
+    except Exception as e:
+        db.session.rollback()
+        return error_response(message=f"Failed to reset password: {str(e)}", status_code=500)
